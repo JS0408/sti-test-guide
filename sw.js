@@ -1,5 +1,5 @@
 // 오프라인용: 인터넷이 되면 항상 새 버전을 받아 보관하고, 안 되면 보관본을 씀
-const CACHE = 'sti-guide-v6';
+const CACHE = 'sti-guide-v7';
 const CORE = ['./', './index.html', './lib/exceljs.min.js', './lib/jszip.min.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
