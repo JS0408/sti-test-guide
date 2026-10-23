@@ -185,6 +185,7 @@ select:focus-visible, textarea:focus-visible, label.btn:focus-within { outline: 
 .pos-h { font-size: .8rem; font-weight: 700; color: var(--muted); }
 .pos .in { text-align: center; padding: 8px 4px; }
 .avg { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: .95rem; text-align: center; padding: 4px; border-radius: 6px; background: var(--sunken); }
+.avg[data-fail="true"] { color: var(--warn); background: var(--warn-soft); }
 .avg small { font-family: var(--f-body); color: var(--muted); font-size: .72rem; margin-right: 4px; }
 .flag { font-size: .74rem; color: var(--warn); line-height: 1.35; }
 .pt-extra { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: end; }
@@ -476,6 +477,7 @@ label.btn.on { border-color: var(--accent); }
       <li><p><b>XL2에 결과를 저장합니다</b> (가능한 경우). 파일 이름 예: <span class="num">TS-100_010m_C_1</span>. 기록지와 XL2 파일 두 곳에 남겨 두면 나중에 정리할 때 대조할 수 있습니다.</p></li>
     </ol>
     <p class="check-line"><b>정상 범위 감각:</b> STI 값은 0~1 사이입니다. 스피커 바로 앞(1, 101, 201m)은 높고, 스피커에서 40m 떨어진 곳(40, 140, 240m)은 낮아질 수 있습니다. 갑자기 튀는 값이 나오면 주변 소음이나 마이크 위치부터 확인합니다.</p>
+    <p class="check-line"><b>판정 기준:</b> 위치별 평균 STI가 <span class="num">0.46</span> 이상이면 합격입니다. 0.46 근처 값이 나오면 3차까지 측정해 두세요.</p>
   </div>
   <div class="tbl-wrap"><table>
     <thead><tr><th>측정 순서</th><th>방법</th></tr></thead>
@@ -854,6 +856,7 @@ function toNum(v) {
 }
 const fmt = (n, d) => (typeof n === 'number' ? n.toFixed(d) : '');
 const isNum = x => typeof x === 'number';
+const PASS_STI = 0.46;   // 판정 기준: 평균 STI 0.46 이상 합격
 // 한 위치의 평균: 입력된 1·2·3차 값 모두의 평균
 function posStats(row, p) {
   const v = [1, 2, 3].map(n => row[p + n]);
@@ -1041,6 +1044,7 @@ function renderRec() {
       const a = $(`a-${d}-${p}`);
       a.hidden = st.avg == null;
       a.replaceChildren(el('small', { text: '평균' }), st.avg == null ? '' : st.avg.toFixed(2));
+      a.dataset.fail = String(st.avg != null && st.avg < PASS_STI);
       $(`f-${d}-${p}`).textContent = st.flag;
       if (got.some(Boolean)) full++;   // 1~3회 중 몇 번이든 찍었으면 측정한 위치로 셈
     });
@@ -1281,7 +1285,7 @@ function buildSheet(wb, c, k, idx, sender, names) {
       const fill = st.flag ? warnFill : undefined;
       linkOr(ws.getCell(r, c0).address, st.v[0], d, p + '1', { fmt: '0.00', fill });
       linkOr(ws.getCell(r, c0 + 1).address, st.v[1], d, p + '2', { fmt: '0.00', fill });
-      put(ws.getCell(r, c0 + 2).address, st.avg, { fmt: '0.00', fill: avgFill, font: { bold: true } });
+      put(ws.getCell(r, c0 + 2).address, st.avg, { fmt: '0.00', fill: avgFill, font: { bold: true, color: { argb: st.avg != null && st.avg < PASS_STI ? 'FFC2412D' : 'FF1D2327' } } });
       if (isNum(st.v[2])) third.push(`${pl[0]} 3차 ${st.v[2].toFixed(2)}`);
       else if (findShot(`${cid}-${kid}`, d, p + '3')) third.push(`${pl[0]} 3차 사진`);
     });
@@ -1290,7 +1294,7 @@ function buildSheet(wb, c, k, idx, sender, names) {
     ws.getRow(r).height = 24;
   });
 
-  merge('A20:M20', '※ 거리는 시작점(SP1) 기준입니다. 지점마다 2회 측정하고, 두 값의 차이가 0.03을 넘으면 한 번 더 측정해 비고에 적습니다. 지점마다 1~3회 측정할 수 있으며 빈칸은 측정하지 않은 회차입니다. 「사진」을 누르면 photos 폴더의 XL2 화면 사진이 열립니다(ZIP을 푼 뒤). 값이 입력된 칸은 숫자로 표시하고, 평균은 입력된 값의 평균입니다.', { font: { size: 9 }, align: { horizontal: 'left' }, border: false });
+  merge('A20:M20', '※ 거리는 시작점(SP1) 기준입니다. 지점마다 2회 측정하고, 두 값의 차이가 0.03을 넘으면 한 번 더 측정해 비고에 적습니다. 지점마다 1~3회 측정할 수 있으며 빈칸은 측정하지 않은 회차입니다. 「사진」을 누르면 photos 폴더의 XL2 화면 사진이 열립니다(ZIP을 푼 뒤). 값이 입력된 칸은 숫자로 표시하고, 평균은 입력된 값의 평균입니다. 판정 기준: 평균 STI 0.46 이상 합격(미만은 빨간 글씨).', { font: { size: 9 }, align: { horizontal: 'left' }, border: false });
   ws.getRow(20).height = 30;
   merge('A21:B23', '특이사항', { fill: head, font: { bold: true } });
   merge('C21:M23', m.notes, { align: { horizontal: 'left', vertical: 'top' } });
