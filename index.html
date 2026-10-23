@@ -73,7 +73,7 @@ header.top { padding-block: 28px 18px; display: grid; gap: 12px; }
 nav.tabs {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
   background: var(--bg); border-bottom: 1px solid var(--line);
-  display: flex; gap: 4px; overflow-x: auto; padding-block: 8px; scrollbar-width: none;
+  display: flex; flex-wrap: wrap; gap: 6px; padding-block: 8px;
 }
 nav.tabs button {
   flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
@@ -147,9 +147,78 @@ td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-spa
 .footer-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-top: 24px; color: var(--muted); font-size: .85rem; }
 .btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 .88rem var(--f-body); padding: 7px 12px; border-radius: 8px; cursor: pointer; }
 .btn.danger { border-color: var(--warn); color: var(--warn); }
+/* 측정 기록 */
+.rec { display: grid; gap: 14px; }
+.vh { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
+.status { font-size: .88rem; border-radius: 8px; padding: 8px 12px; background: var(--sunken); color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.status.warn { background: var(--warn-soft); color: var(--warn); }
+.status.ok { background: var(--ok-soft); color: var(--ok); }
+.rec-bar { display: grid; gap: 8px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.seg .lbl { font-size: .8rem; color: var(--muted); font-weight: 700; min-width: 5.5em; }
+.seg button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 .92rem var(--f-body); padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #2a1c00; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.field { display: grid; gap: 3px; min-width: 0; }
+.field > span { font-size: .78rem; color: var(--muted); font-weight: 700; }
+.in { width: 100%; min-width: 0; font: 400 1rem var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
+.in.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.in[aria-invalid="true"] { border-color: var(--warn); }
+.in:disabled { opacity: .55; }
+textarea.in { min-height: 72px; resize: vertical; }
+select:focus-visible, textarea:focus-visible, label.btn:focus-within { outline: 3px solid var(--accent); outline-offset: 2px; }
+.pts { display: grid; gap: 10px; }
+.pt-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 10px; }
+.pt-card[data-full="true"] { border-color: var(--ok); }
+.pt-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.pt-head .d { font-family: var(--f-mono); font-size: 1.15rem; font-weight: 500; }
+.pt-head .ref { color: var(--muted); font-size: .88rem; }
+.pt-head .cnt { margin-left: auto; font-family: var(--f-mono); font-size: .8rem; color: var(--muted); }
+.pt-card[data-full="true"] .cnt { color: var(--ok); }
+.pos-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pos { display: grid; gap: 5px; align-content: start; min-width: 0; }
+.pos-h { font-size: .8rem; font-weight: 700; color: var(--muted); }
+.pos .in { text-align: center; padding: 8px 4px; }
+.avg { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: .95rem; text-align: center; padding: 4px; border-radius: 6px; background: var(--sunken); }
+.avg small { font-family: var(--f-body); color: var(--muted); font-size: .72rem; margin-right: 4px; }
+.flag { font-size: .74rem; color: var(--warn); line-height: 1.35; }
+.pt-extra { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; gap: 8px; align-items: end; }
+label.btn { display: inline-flex; align-items: center; gap: 6px; position: relative; white-space: nowrap; }
+label.btn.on { border-color: var(--accent); }
+.thumbs { display: flex; flex-wrap: wrap; gap: 6px; }
+.thumbs:empty { display: none; }
+.ph { position: relative; aspect-ratio: 1; width: 100%; max-width: 100%; border-radius: 8px; overflow: hidden; background: var(--sunken); border: 1px solid var(--line); padding: 0; cursor: pointer; color: var(--muted); font-size: .75rem; }
+.thumbs .ph { width: 60px; }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph span { position: absolute; inset: auto 0 0 0; font-size: .72rem; padding: 2px 6px; background: rgba(0, 0, 0, .55); color: #fff; text-align: left; }
+.photo-sec { display: grid; gap: 10px; }
+.photo-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.photo-head h3 { margin-right: auto; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+.empty { color: var(--muted); font-size: .9rem; }
+.lightbox { position: fixed; inset: 0; z-index: 20; background: rgba(10, 12, 13, .92); display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) max(16px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 12px) max(16px, env(safe-area-inset-left, 0px)); }
+.lightbox img { max-width: 100%; max-height: 100%; margin: auto; object-fit: contain; min-height: 0; }
+.lb-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #eef0ee; font-size: .9rem; }
+.lb-bar .cap { margin-right: auto; }
+.send { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.send .field { max-width: 22rem; }
+.send-sum { font-size: .9rem; color: var(--muted); }
+.send-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.clear-row { padding-top: 8px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 700; padding: 10px 16px; }
+.btn:disabled { opacity: .5; cursor: wait; }
+@media (max-width: 640px) {
+  nav.tabs { position: static; gap: 5px; }
+  nav.tabs button { padding: 6px 9px; font-size: .85rem; }
+  nav.tabs button small { display: none; }
+}
 @media (max-width: 520px) {
   h1 { font-size: 1.5rem; }
   .step-row { padding: 12px; gap: 10px; }
+  .pt-card { padding: 12px; }
+  .pt-extra { grid-template-columns: minmax(0, 1fr) auto; }
+  .pt-extra .note-f { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
 </style>
@@ -160,7 +229,7 @@ td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-spa
 <header class="top">
   <span class="eyebrow">터널무선중계통합시스템 · 현장성능시험</span>
   <h1>금정1터널 STI 시험 가이드</h1>
-  <p class="lead">처음 시험하는 사람도 그대로 따라 할 수 있게 사전 점검부터 철수까지 탭별로 나눠 적었습니다. 할 일을 누르면 방법이 펼쳐지고, 끝나면 체크하세요. 체크 표시는 이 기기에만 저장됩니다.</p>
+  <p class="lead">처음 시험하는 사람도 그대로 따라 할 수 있게 사전 점검부터 철수까지 탭별로 나눠 적었습니다. 할 일을 누르면 방법이 펼쳐지고, 끝나면 체크하세요. 체크 표시는 이 기기에만 저장됩니다. 측정값과 사진은 <b>측정 기록</b> 탭에 입력하면 이 휴대폰에 저장되고, 끝난 뒤 [기록 보내기]로 엑셀 기록지와 사진을 한 번에 보냅니다.</p>
   <div class="chips">
     <span class="chip">설치 <b class="num">10/29 (목)</b></span>
     <span class="chip">시험 <b class="num">10/30 (금)</b></span>
@@ -178,6 +247,57 @@ td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-spa
   <button class="btn danger" id="reset" type="button">체크 모두 지우기</button>
   <span id="reset-confirm" hidden>정말 지울까요? <button class="btn danger" id="reset-yes" type="button">지우기</button> <button class="btn" id="reset-no" type="button">취소</button></span>
 </div>
+</div>
+
+<template id="tpl-record">
+  <div class="rec" id="rec">
+    <p class="status" id="rec-avail"></p>
+    <div class="rec-bar">
+      <div class="seg" id="seg-combo" role="group" aria-label="스피커 조합"><span class="lbl">스피커 조합</span></div>
+      <div class="seg" id="seg-kind" role="group" aria-label="구분"><span class="lbl">구분</span></div>
+    </div>
+    <div class="fields" id="rec-fields"></div>
+    <p class="lead">거리마다 우측·중앙·좌측 값을 입력하세요. 칸에서 벗어나면 이 휴대폰에 바로 저장됩니다. 1·2차 차이가 0.03을 넘으면 빨간 글씨로 3차 측정을 알려 줍니다.</p>
+    <div class="pts" id="rec-pts"></div>
+    <div class="fields"><label class="field" style="grid-column: 1 / -1"><span>특이사항 (볼륨 설정, 1m 음압, 환경 변화 등)</span><textarea class="in" id="m-notes" rows="3"></textarea></label></div>
+    <div class="photo-sec">
+      <div class="photo-head">
+        <h3>사진 <span class="num" id="ph-count"></span></h3>
+        <label class="btn">카메라로 찍기<input class="vh" type="file" id="ph-cam" accept="image/*" capture="environment"></label>
+        <label class="btn">앨범에서 고르기<input class="vh" type="file" id="ph-pick" accept="image/*" multiple></label>
+      </div>
+      <p class="status" id="ph-status" hidden></p>
+      <div class="gallery" id="gallery"></div>
+      <p class="lead">거리 카드의 [사진] 버튼으로 찍으면 그 지점 사진으로 묶입니다. 종이 기록지, 장비 설치 모습, 볼륨 눈금 같은 사진은 여기서 올리세요.</p>
+    </div>
+
+    <section class="send" aria-labelledby="send-h">
+      <h3 id="send-h">기록 보내기</h3>
+      <p class="lead">측정이 끝나면 이 휴대폰에 저장된 기록지 4장과 사진을 ZIP 파일 하나로 묶어 카톡이나 메일로 보냅니다. 보낸 뒤에도 기록은 지워지지 않습니다.</p>
+      <label class="field"><span>보내는 사람</span><input class="in" id="sender" type="text" autocomplete="name" placeholder="이름 (파일 이름에 들어갑니다)"></label>
+      <p class="send-sum" id="send-sum"></p>
+      <div class="send-row">
+        <button class="btn primary" id="zip-make" type="button">보낼 파일 만들기</button>
+        <button class="btn primary" id="zip-share" type="button" hidden>카톡·메일로 보내기</button>
+        <button class="btn" id="zip-save" type="button" hidden>파일로 저장</button>
+      </div>
+      <p class="status" id="send-status" hidden></p>
+      <div class="send-row clear-row">
+        <button class="btn danger" id="rec-clear" type="button">이 휴대폰의 기록 모두 지우기</button>
+        <span id="rec-clear-confirm" hidden>보내지 않은 기록은 되살릴 수 없습니다. <button class="btn danger" id="rec-clear-yes" type="button">지우기</button> <button class="btn" id="rec-clear-no" type="button">취소</button></span>
+      </div>
+    </section>
+  </div>
+</template>
+
+<div class="lightbox" id="lb" hidden role="dialog" aria-modal="true" aria-label="사진 보기">
+  <img id="lb-img" alt="">
+  <div class="lb-bar">
+    <span class="cap" id="lb-cap"></span>
+    <button class="btn danger" id="lb-del" type="button">삭제</button>
+    <span id="lb-confirm" hidden>정말 삭제할까요? <button class="btn danger" id="lb-del-yes" type="button">삭제</button></span>
+    <button class="btn" id="lb-close" type="button">닫기</button>
+  </div>
 </div>
 
 <template id="tpl-overview">
@@ -297,7 +417,7 @@ td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-spa
 <template id="tpl-roles">
   <div class="roles">
     <div class="role"><span class="tag">A</span><h3>측정 담당</h3><p>XL2를 다루고 지점마다 측정 버튼을 누릅니다. 측정 중 주변에 "조용히"를 알립니다.</p></div>
-    <div class="role"><span class="tag">B</span><h3>기록 담당</h3><p>측정 기록지에 값을 적고 2회 값 차이를 확인합니다. 다음 지점을 불러 줍니다.</p></div>
+    <div class="role"><span class="tag">B</span><h3>기록 담당</h3><p>측정 기록 탭에 값을 입력하고 2회 값 차이를 확인합니다. 다음 지점을 불러 줍니다.</p></div>
     <div class="role"><span class="tag">C</span><h3>음원·장비 담당</h3><p>컨트롤러 옆 테이블에 앉아 음원 재생·정지, 볼륨, 조합 교체를 맡습니다. 무전기로 A와 연락합니다.</p></div>
     <div class="role"><span class="tag">D</span><h3>안전 담당</h3><p>경광봉으로 차량·사람을 통제하고, 차량이 오면 측정을 멈추라고 알립니다.</p></div>
   </div>
@@ -359,6 +479,9 @@ const PHASES = [
   { id: 'overview', tab: '개요', when: '먼저 읽기', title: '시험 목적과 준비 결정',
     meta: ['읽는 데 5분', '참석: 블루넷테크놀러지, 제이디솔루션, 도로공사 전북본부 교통부'],
     templates: ['tpl-overview'] },
+  { id: 'record', tab: '측정 기록', when: '입력·사진', title: '측정 기록',
+    meta: ['조합 2개 × 자체·입회 = 기록지 4장', '거리 9곳 × 좌·중·우', '입력하면 바로 저장'],
+    templates: ['tpl-record'] },
   { id: 'layout', tab: '배치도', when: '장비 위치', title: '현장 배치도',
     meta: ['앰프 5대(50m 간격)', '스피커 3대(0·100·200m)', '측정 지점 27곳'],
     templates: ['tpl-layout'] },
@@ -406,7 +529,7 @@ const PHASES = [
       { t: '기록지와 소모품을 준비합니다', who: 'B', how: [
           'STI 측정 기록지를 조합별 2부씩(오전·오후) 인쇄하고 예비로 2장 더 뽑습니다.',
           '클립보드, 볼펜 여러 자루, 분필, 줄자를 챙깁니다.',
-          '이 가이드를 휴대폰에 파일로 저장합니다. 터널 안은 인터넷이 안 될 수 있습니다.'],
+          '측정값은 이 페이지의 측정 기록 탭에 입력합니다. 출발 전 인터넷이 될 때 이 페이지를 한 번 열어 「오프라인 준비됨」이 보이는지 확인합니다. 그러면 터널 안에서 인터넷이 없어도 열리고 입력할 수 있습니다. 만일을 위해 종이 기록지도 챙깁니다.'],
         ok: '기록지 6장 이상, 분필, 줄자가 가방에 있다.' },
       { t: '현장 운영 사항을 확인합니다', who: '책임자', how: [
           '도로공사와 교통 통제 방식, 작업 시간, 입회 시각을 확인합니다.',
@@ -491,7 +614,7 @@ const PHASES = [
           '소음 환경이 달라지면(환기팬 가동 등) 다시 잽니다.'],
         ok: '배경소음 값이 기록지에 적혀 있다.' },
       { t: '조합 1 측정: TS + 100W', time: '08:30', who: 'A·B', how: [
-          '기록지 1번(TS+100W) 위쪽에 측정 일시, 측정자, 음원 입력 방식, STIPA 판, "자체"를 체크합니다.',
+          '측정 기록 탭에서 TS + 100W · 자체를 고르고 측정 일시, 측정자, 음원 입력 방식, STIPA 판, 배경소음을 입력합니다.',
           'C가 STIPA 음원을 재생합니다(측정이 끝날 때까지 계속 틀어 둡니다).',
           '측정법 탭의 순서대로 27개 지점을 2회씩 측정합니다.'],
         ok: '기록지 1번의 27개 지점 1차·2차 칸이 모두 채워졌다.' },
@@ -503,13 +626,13 @@ const PHASES = [
           'A가 SP1 1m 앞에서 음압을 재어 조합 1과 비교해 기록합니다.'],
         ok: '세 스피커 모두 300W로 교체, 소리 정상.',
         warn: '볼륨을 올린 채 드라이버를 빼거나 꽂지 마세요.' },
-      { t: '조합 2 측정: TS + 300W', time: '09:50', who: 'A·B', how: ['기록지 2번(TS+300W)으로 조합 1과 똑같이 측정합니다.'],
+      { t: '조합 2 측정: TS + 300W', time: '09:50', who: 'A·B', how: ['측정 기록 탭에서 조합을 TS + 300W로 바꾸고 조합 1과 똑같이 측정합니다.'],
         ok: '기록지 2번 완료.' },
       { t: '오전 기록을 확인하고 사진으로 남깁니다', time: '10:50', who: 'B', how: [
-          '2장 모두 빈칸이 없는지 봅니다. 빈칸이 있으면 점심 전에 다시 측정합니다.',
-          '2회 값 차이가 0.03을 넘는 곳에 3차 값이 적혀 있는지 봅니다.',
-          '기록지 2장을 휴대폰으로 사진 찍어 둡니다(분실 대비).'],
-        ok: '빈칸 없음, 사진 2장 저장.' },
+          '측정 기록 탭에서 조합 2개 모두 27/27 지점이 채워졌는지 봅니다. 빈칸이 있으면 점심 전에 다시 측정합니다.',
+          '빨간 글씨(1·2차 차이 0.03 초과)가 남은 곳에 3차 값을 넣었는지 봅니다.',
+          '종이 기록지를 함께 썼다면 측정 기록 탭에서 사진으로 올려 둡니다.'],
+        ok: '빈칸·빨간 글씨 없음.' },
     ]},
   { id: 'pm', tab: '시험 오후', when: '10/30 (금) 오후', title: '본부 입회시험',
     meta: ['입회 범위에 따라 1~2시간', '입회: 도로공사 전북본부 교통부'],
@@ -545,8 +668,9 @@ const PHASES = [
       { t: '데이터를 백업하고 정리를 맡깁니다', who: 'A·B', how: [
           'XL2 저장 파일을 노트북으로 옮깁니다.',
           '기록지 원본(오전 2장, 오후 입회분)을 스캔하거나 사진으로 찍어 작업 폴더에 넣습니다.',
-          '기록지 값을 Claude에게 전달하면 조합별·구간별 평균과 비교표로 정리합니다.'],
-        ok: 'XL2 데이터와 기록지 사진이 작업 폴더에 있다.' },
+          '기록한 휴대폰마다 측정 기록 탭 맨 아래 [기록 보내기]로 ZIP 파일(엑셀 기록지 + 사진)을 보냅니다.',
+          '받은 ZIP 파일을 작업 폴더에 넣고 Claude에게 맡기면 조합별·구간별 평균과 비교표로 정리합니다.'],
+        ok: 'XL2 데이터와 기록한 휴대폰 전부의 ZIP 파일이 작업 폴더에 있다.' },
     ]},
   { id: 'xl2', tab: '측정법', when: 'XL2', title: 'XL2로 측정하는 법',
     meta: ['지점당 2회', '1회 약 15~25초'],
@@ -662,6 +786,488 @@ document.getElementById('reset-yes').addEventListener('click', () => {
   document.querySelectorAll('.step input[type="checkbox"]').forEach(cb => { cb.checked = false; cb.closest('.step').dataset.done = 'false'; });
   rc.hidden = true; refresh();
 });
+
+// ── 측정 기록: 값은 localStorage, 사진은 IndexedDB(이 휴대폰에만). [기록 보내기]로 엑셀 기록지+사진 ZIP을 만듦 ──
+const DISTS = [[1, 'SP1 +1m'], [10, 'SP1 +10m'], [40, 'SP1 +40m'], [101, 'SP2 +1m'], [110, 'SP2 +10m'], [140, 'SP2 +40m'], [201, 'SP3 +1m'], [210, 'SP3 +10m'], [240, 'SP3 +40m']];
+const POS = [['R', '우측'], ['C', '중앙'], ['L', '좌측']];
+const COMBOS = [['ts100', 'TS + 100W', '100W'], ['ts300', 'TS + 300W', '300W']];
+const KINDS = [['self', '자체'], ['wit', '입회']];
+const META = [
+  ['when', '측정 일시', 'text', '10/30 08:30 ~ 09:30'],
+  ['who', '측정자', 'text', '이름'],
+  ['input', '음원 입력', 'select', ['', 'USB', 'AUX(MR-PRO)']],
+  ['ed', 'STIPA 판', 'select', ['', 'Ed.4', 'Ed.5']],
+  ['bg', '배경소음 dB(A)', 'num', '예: 62.5'],
+];
+const DKEY = 'sti-rec-data-v1', SKEY = 'sti-rec-sheet-v1', NKEY = 'sti-rec-sender-v1', LKEY = 'sti-rec-sent-v1';
+
+const rec = { combo: 'ts100', kind: 'self', sheets: {}, photos: [], urls: {}, idb: null, storageOk: true, idbOk: true,
+  busy: 0, zip: null, lb: null, offline: 'wait' };
+try { const s = JSON.parse(localStorage.getItem(SKEY) || 'null'); if (s) { rec.combo = s.combo || rec.combo; rec.kind = s.kind || rec.kind; } } catch (e) {}
+try { rec.sheets = JSON.parse(localStorage.getItem(DKEY) || '{}') || {}; } catch (e) { rec.storageOk = false; }
+
+const sheetId = () => `${rec.combo}-${rec.kind}`;
+const sheetLabel = id => { const [c, k] = id.split('-'); return `${(COMBOS.find(x => x[0] === c) || [, c])[1]} · ${(KINDS.find(x => x[0] === k) || [, k])[1]}`; };
+const $ = id => document.getElementById(id);
+const isObj = v => v && typeof v === 'object' && !Array.isArray(v);
+function deepMerge(t, s) {
+  for (const [k, v] of Object.entries(s)) t[k] = isObj(v) ? deepMerge(isObj(t[k]) ? t[k] : {}, v) : v;
+  return t;
+}
+// '' → null, 숫자가 아니면 undefined(저장 안 함)
+function toNum(v) {
+  v = String(v).trim().replace(',', '.');
+  if (v === '') return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+}
+const fmt = (n, d) => (typeof n === 'number' ? n.toFixed(d) : '');
+const isNum = x => typeof x === 'number';
+// 한 위치의 평균: 입력된 1·2·3차 값 모두의 평균
+function posStats(row, p) {
+  const v = [1, 2, 3].map(n => row[p + n]);
+  const nums = v.filter(isNum);
+  const avg = nums.length ? Math.round(nums.reduce((a, b) => a + b, 0) / nums.length * 100) / 100 : null;
+  let flag = '';
+  if (nums.some(x => x < 0 || x > 1)) flag = 'STI는 0~1 사이입니다';
+  else if (isNum(v[0]) && isNum(v[1]) && Math.abs(v[0] - v[1]) > 0.03 + 1e-9 && !isNum(v[2])) flag = `차이 ${Math.abs(v[0] - v[1]).toFixed(2)} · 3차 측정`;
+  return { v, avg, flag, full: isNum(v[0]) && isNum(v[1]) };
+}
+
+function saveData() {
+  try { localStorage.setItem(DKEY, JSON.stringify(rec.sheets)); rec.storageOk = true; }
+  catch (e) { rec.storageOk = false; }
+}
+function write(patch) {
+  const id = sheetId();
+  rec.sheets[id] = deepMerge(rec.sheets[id] || {}, patch);
+  saveData(); dropZip(); renderRec();
+}
+
+// ── IndexedDB (사진) ──
+function idbOpen() {
+  return new Promise((ok, no) => {
+    const r = indexedDB.open('sti-rec', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => no(r.error);
+  });
+}
+function idbDo(mode, fn) {
+  return new Promise((ok, no) => {
+    const tx = rec.idb.transaction('photos', mode);
+    const req = fn(tx.objectStore('photos'));
+    tx.oncomplete = () => ok(req && req.result);
+    tx.onerror = () => no(tx.error);
+    tx.onabort = () => no(tx.error);
+  });
+}
+const photoUrl = ph => rec.urls[ph.id] || (rec.urls[ph.id] = URL.createObjectURL(new Blob([ph.buf], { type: ph.type })));
+
+function numInput(id, ph, onVal) {
+  const inp = el('input', { class: 'in num', id, type: 'text', inputmode: 'decimal', autocomplete: 'off', placeholder: ph });
+  inp.addEventListener('change', () => {
+    const v = toNum(inp.value);
+    inp.setAttribute('aria-invalid', String(v === undefined));
+    if (v !== undefined) onVal(v);
+  });
+  return inp;
+}
+function photoButton(d) {
+  const inp = el('input', { class: 'vh', type: 'file', accept: 'image/*', capture: 'environment', id: 'cam-' + d });
+  inp.addEventListener('change', () => { addPhotos([...inp.files], d); inp.value = ''; });
+  return el('label', { class: 'btn cam-btn' }, '사진', inp);
+}
+
+function buildRecord() {
+  COMBOS.forEach(([k, l]) => {
+    const b = el('button', { type: 'button', 'data-k': k, text: l });
+    b.addEventListener('click', () => { rec.combo = k; pickSheet(); });
+    $('seg-combo').append(b);
+  });
+  KINDS.forEach(([k, l]) => {
+    const b = el('button', { type: 'button', 'data-k': k, text: l });
+    b.addEventListener('click', () => { rec.kind = k; pickSheet(); });
+    $('seg-kind').append(b);
+  });
+  META.forEach(([k, label, type, opt]) => {
+    let inp;
+    if (type === 'select') {
+      inp = el('select', { class: 'in', id: 'm-' + k });
+      opt.forEach(o => inp.append(el('option', { value: o, text: o || '선택' })));
+      inp.addEventListener('change', () => write({ meta: { [k]: inp.value } }));
+    } else if (type === 'num') {
+      inp = numInput('m-' + k, opt, v => write({ meta: { [k]: v } }));
+    } else {
+      inp = el('input', { class: 'in', id: 'm-' + k, type: 'text', autocomplete: 'off', placeholder: opt });
+      inp.addEventListener('change', () => write({ meta: { [k]: inp.value.trim() } }));
+    }
+    $('rec-fields').append(el('label', { class: 'field' }, el('span', { text: label }), inp));
+  });
+  $('m-notes').addEventListener('change', e => write({ meta: { notes: e.target.value } }));
+
+  DISTS.forEach(([d, ref]) => {
+    const grid = el('div', { class: 'pos-grid' });
+    POS.forEach(([p, pl]) => {
+      const col = el('div', { class: 'pos' }, el('span', { class: 'pos-h', text: pl }));
+      [1, 2, 3].forEach(n => col.append(numInput(`v-${d}-${p}${n}`, `${n}차`, v => write({ pts: { [d]: { [p + n]: v } } }))));
+      col.append(el('div', { class: 'avg', id: `a-${d}-${p}` }), el('div', { class: 'flag', id: `f-${d}-${p}` }));
+      grid.append(col);
+    });
+    const spl = numInput(`s-${d}`, '음압 dB(A)', v => write({ pts: { [d]: { spl: v } } }));
+    const note = el('input', { class: 'in', id: `n-${d}`, type: 'text', autocomplete: 'off', placeholder: '비고' });
+    note.addEventListener('change', () => write({ pts: { [d]: { note: note.value.trim() } } }));
+    $('rec-pts').append(el('article', { class: 'pt-card', id: 'pt-' + d },
+      el('div', { class: 'pt-head' }, el('span', { class: 'd', text: d + 'm' }), el('span', { class: 'ref', text: ref }), el('span', { class: 'cnt', id: 'c-' + d })),
+      grid,
+      el('div', { class: 'pt-extra' },
+        el('label', { class: 'field' }, el('span', { text: '음압 dB(A)' }), spl),
+        el('label', { class: 'field note-f' }, el('span', { text: '비고' }), note),
+        photoButton(d)),
+      el('div', { class: 'thumbs', id: 't-' + d })));
+  });
+
+  $('ph-cam').addEventListener('change', e => { addPhotos([...e.target.files], ''); e.target.value = ''; });
+  $('ph-pick').addEventListener('change', e => { addPhotos([...e.target.files], ''); e.target.value = ''; });
+  try { $('sender').value = localStorage.getItem(NKEY) || ''; } catch (e) {}
+  $('sender').addEventListener('change', () => { try { localStorage.setItem(NKEY, $('sender').value.trim()); } catch (e) {} dropZip(); });
+  $('zip-make').addEventListener('click', makeZip);
+  $('zip-share').addEventListener('click', shareZip);
+  $('zip-save').addEventListener('click', saveZip);
+  $('rec-clear').addEventListener('click', () => { $('rec-clear-confirm').hidden = false; });
+  $('rec-clear-no').addEventListener('click', () => { $('rec-clear-confirm').hidden = true; });
+  $('rec-clear-yes').addEventListener('click', clearAll);
+  $('lb-close').addEventListener('click', closeLb);
+  $('lb-del').addEventListener('click', () => { $('lb-confirm').hidden = false; $('lb-del').hidden = true; });
+  $('lb-del-yes').addEventListener('click', deletePhoto);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('lb').hidden) closeLb(); });
+}
+
+function pickSheet() {
+  try { localStorage.setItem(SKEY, JSON.stringify({ combo: rec.combo, kind: rec.kind })); } catch (e) {}
+  renderRec(); renderPhotos();
+}
+
+function setVal(inp, v) {
+  if (document.activeElement === inp) return;
+  inp.value = v == null ? '' : v;
+  inp.setAttribute('aria-invalid', 'false');
+}
+
+function renderRec() {
+  const sid = sheetId();
+  const data = rec.sheets[sid] || {};
+  const meta = data.meta || {}, pts = data.pts || {};
+  document.querySelectorAll('#seg-combo button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === rec.combo)));
+  document.querySelectorAll('#seg-kind button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === rec.kind)));
+  META.forEach(([k, , type]) => setVal($('m-' + k), type === 'num' ? fmt(meta[k], 1) : meta[k]));
+  setVal($('m-notes'), meta.notes);
+
+  let done = 0;
+  DISTS.forEach(([d]) => {
+    const row = pts[d] || {};
+    let full = 0;
+    POS.forEach(([p]) => {
+      const st = posStats(row, p);
+      st.v.forEach((x, i) => setVal($(`v-${d}-${p}${i + 1}`), fmt(x, 2)));
+      $(`a-${d}-${p}`).replaceChildren(el('small', { text: '평균' }), st.avg == null ? '–' : st.avg.toFixed(2));
+      $(`f-${d}-${p}`).textContent = st.flag;
+      if (st.full) full++;
+    });
+    setVal($('s-' + d), fmt(row.spl, 1));
+    setVal($('n-' + d), row.note);
+    $('c-' + d).textContent = `${full}/3`;
+    $('pt-' + d).dataset.full = String(full === 3);
+    done += full;
+  });
+  renderStatus();
+  renderSend();
+}
+
+function renderStatus() {
+  const a = $('rec-avail');
+  if (!rec.storageOk || !rec.idbOk) {
+    a.className = 'status warn';
+    a.textContent = '이 브라우저는 저장이 막혀 있습니다(사생활 보호·시크릿 모드 등). 일반 창에서 다시 열어 주세요. 지금 입력한 값은 창을 닫으면 사라집니다.';
+    return;
+  }
+  a.className = 'status ok';
+  const off = rec.offline === 'ready' ? ' · 오프라인 준비됨(인터넷 없이도 열림)' : rec.offline === 'no' ? '' : ' · 오프라인 준비 중…';
+  a.textContent = `이 휴대폰에만 저장됩니다${off}. 측정이 끝나면 맨 아래 [기록 보내기]로 보내세요.`;
+}
+
+function countValues() {
+  let n = 0;
+  Object.values(rec.sheets).forEach(s => Object.values((s && s.pts) || {}).forEach(r => POS.forEach(([p]) => [1, 2, 3].forEach(k => { if (isNum(r[p + k])) n++; }))));
+  return n;
+}
+function renderSend() {
+  let last = '';
+  try { const t = localStorage.getItem(LKEY); if (t) last = ' · 마지막으로 보낸 시각 ' + new Date(t).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) {}
+  $('send-sum').textContent = `이 휴대폰에 저장된 기록: 측정값 ${countValues()}개 · 사진 ${rec.photos.length}장${last}`;
+  const ready = !!rec.zip;
+  $('zip-make').hidden = ready;
+  $('zip-share').hidden = !(ready && navigator.canShare && navigator.canShare({ files: [rec.zip] }));
+  $('zip-save').hidden = !ready;
+}
+function sendStatus(msg, cls) {
+  const s = $('send-status');
+  s.hidden = !msg; s.className = 'status' + (cls ? ' ' + cls : ''); s.textContent = msg || '';
+}
+function dropZip() { if (rec.zip) { rec.zip = null; sendStatus(''); renderSend(); } }
+
+// ── 사진: 긴 변 2400px JPEG로 줄여서 IndexedDB에 보관 ──
+async function shrink(file) {
+  try {
+    const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    const k = Math.min(1, 2400 / Math.max(bmp.width, bmp.height));
+    if (k === 1 && file.size < 3e6 && /^image\/(jpeg|png|webp)$/.test(file.type)) return file;
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    return await new Promise((ok, no) => c.toBlob(b => (b ? ok(b) : no(new Error('encode'))), 'image/jpeg', 0.85));
+  } catch (e) { return file; }
+}
+async function addPhotos(files, d) {
+  if (!rec.idb) { photoStatus('이 브라우저에서는 사진을 저장할 수 없습니다. 일반 창에서 다시 열어 주세요.', 'warn'); return; }
+  let fail = 0;
+  for (const f of files) {
+    rec.busy++; renderPhotos();
+    try {
+      const blob = await shrink(f);
+      const ph = { sheet: sheetId(), d: d ? String(d) : '', at: new Date().toISOString(), type: blob.type || 'image/jpeg', buf: await blob.arrayBuffer() };
+      ph.id = await idbDo('readwrite', st => st.add(ph));
+      rec.photos.push(ph);
+    } catch (e) { fail++; }
+    rec.busy--;
+  }
+  dropZip(); renderPhotos(); renderSend();
+  if (fail) photoStatus(`사진 ${fail}장을 저장하지 못했습니다. 휴대폰 저장 공간을 확인하세요.`, 'warn');
+}
+function photoStatus(msg, cls) {
+  const st = $('ph-status');
+  st.hidden = !msg; st.className = 'status' + (cls ? ' ' + cls : ''); st.textContent = msg || '';
+}
+
+function thumb(ph) {
+  const img = el('img', { src: photoUrl(ph), alt: (ph.d ? ph.d + 'm ' : '') + '사진', loading: 'lazy' });
+  const b = el('button', { class: 'ph', type: 'button', title: '크게 보기' }, img, ph.d ? el('span', { text: ph.d + 'm' }) : null);
+  b.addEventListener('click', () => openLb(ph));
+  return b;
+}
+function renderPhotos() {
+  const sid = sheetId();
+  const list = rec.photos.filter(p => p.sheet === sid);
+  $('gallery').replaceChildren(...(list.length ? list.map(thumb) : [el('p', { class: 'empty', text: '아직 이 기록지에 찍은 사진이 없습니다.' })]));
+  $('ph-count').textContent = list.length ? `(${list.length})` : '';
+  DISTS.forEach(([d]) => $('t-' + d).replaceChildren(...list.filter(p => p.d === String(d)).map(thumb)));
+  if (rec.busy) photoStatus(`사진 저장하는 중… (${rec.busy}장)`);
+  else if ($('ph-status').className === 'status') photoStatus('');
+}
+
+function openLb(ph) {
+  rec.lb = ph;
+  $('lb-img').src = photoUrl(ph);
+  const when = new Date(ph.at).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  $('lb-cap').textContent = `${sheetLabel(ph.sheet)}${ph.d ? ' · ' + ph.d + 'm' : ''} · ${when}`;
+  $('lb-confirm').hidden = true; $('lb-del').hidden = false;
+  $('lb').hidden = false; $('lb-close').focus();
+}
+function closeLb() { $('lb').hidden = true; $('lb-img').removeAttribute('src'); rec.lb = null; }
+async function deletePhoto() {
+  const ph = rec.lb; if (!ph) return;
+  try {
+    await idbDo('readwrite', st => st.delete(ph.id));
+    rec.photos = rec.photos.filter(p => p !== ph);
+    if (rec.urls[ph.id]) { URL.revokeObjectURL(rec.urls[ph.id]); delete rec.urls[ph.id]; }
+    closeLb(); dropZip(); renderPhotos(); renderSend();
+  } catch (e) { $('lb-cap').textContent = '삭제하지 못했습니다.'; }
+}
+
+async function clearAll() {
+  rec.sheets = {}; saveData();
+  try { if (rec.idb) await idbDo('readwrite', st => st.clear()); } catch (e) {}
+  Object.values(rec.urls).forEach(u => URL.revokeObjectURL(u));
+  rec.photos = []; rec.urls = {};
+  try { localStorage.removeItem(LKEY); } catch (e) {}
+  $('rec-clear-confirm').hidden = true;
+  dropZip(); renderRec(); renderPhotos();
+}
+
+// ── 보낼 파일: 엑셀 기록지(4장 + 사진 목록) + records.json + photos/ ──
+function loadLib(src, name) {
+  if (window[name]) return Promise.resolve();
+  return new Promise((ok, no) => { const s = el('script', { src }); s.onload = ok; s.onerror = no; document.head.append(s); });
+}
+const photoName = (ph, i) => `${ph.sheet}_${ph.d ? ph.d + 'm' : 'etc'}_${String(i + 1).padStart(3, '0')}.${/png/.test(ph.type) ? 'png' : /webp/.test(ph.type) ? 'webp' : 'jpg'}`;
+
+function buildSheet(wb, c, k, idx, sender) {
+  const [cid, clabel, watt] = c, [kid, klabel] = k;
+  const data = rec.sheets[`${cid}-${kid}`] || {}, m = data.meta || {}, pts = data.pts || {};
+  const ws = wb.addWorksheet(`${clabel.replace(/\s/g, '')} ${klabel}`, {
+    pageSetup: { paperSize: 9, orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 1, margins: { left: .4, right: .4, top: .5, bottom: .5, header: .2, footer: .2 } },
+  });
+  ws.columns = [8, 11, 7, 7, 7, 7, 7, 7, 7, 7, 7, 10, 24].map(width => ({ width }));
+  const thin = { style: 'thin', color: { argb: 'FF7F8C8D' } };
+  const box = { top: thin, left: thin, bottom: thin, right: thin };
+  const head = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE9ECEF' } };
+  const avgFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF4F6F7' } };
+  const warnFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFBE5E0' } };
+  const font = { name: '맑은 고딕', size: 10 };
+  const put = (ref, value, o = {}) => {
+    const cell = ws.getCell(ref);
+    cell.value = value === '' || value == null ? null : value;
+    cell.font = Object.assign({}, font, o.font);
+    cell.alignment = Object.assign({ vertical: 'middle', horizontal: 'center', wrapText: true }, o.align);
+    if (o.border !== false) cell.border = box;
+    if (o.fill) cell.fill = o.fill;
+    if (o.fmt) cell.numFmt = o.fmt;
+    return cell;
+  };
+  const merge = (range, value, o = {}) => { ws.mergeCells(range); put(range.split(':')[0], value, o); styleRange(range, o); };
+  function styleRange(range, o = {}) {
+    if (o.border === false) return;
+    const [a, b] = range.split(':');
+    const ca = ws.getCell(a), cb = ws.getCell(b);
+    for (let r = ca.row; r <= cb.row; r++) for (let col = ca.col; col <= cb.col; col++) {
+      const cell = ws.getCell(r, col); cell.border = box; if (o.fill) cell.fill = o.fill;
+    }
+  }
+
+  merge('A1:M1', `STI 측정 기록지 (${idx}/4)  ·  ${clabel}  ·  ${klabel}`, { font: { size: 14, bold: true }, border: false });
+  merge('A2:M2', '강진광주선 금정1터널  ·  측정장비 NTi XL2 (STIPA)  ·  스피커 0·100·200m(SP1·SP2·SP3), 리피터 앰프 50·150m  ·  1~240m 구간 좌·중·우 측정', { font: { size: 9, color: { argb: 'FF5B646B' } }, border: false });
+  ws.getRow(1).height = 26;
+  const info = [
+    [4, ['스피커', 'TS'], ['압축드라이버', watt], ['측정 일시', m.when]],
+    [5, ['측정자', m.who], ['음원 입력', m.input], ['STIPA 판', m.ed]],
+    [6, ['배경소음 dB(A)', isNum(m.bg) ? m.bg : null], ['구분', klabel], ['보낸 사람', sender]],
+  ];
+  info.forEach(([r, ...pairs]) => {
+    const spans = [['A', 'B', 'C', 'D'], ['E', 'F', 'G', 'H'], ['I', 'J', 'K', 'M']];
+    pairs.forEach(([label, val], i) => {
+      const [l1, l2, v1, v2] = spans[i];
+      merge(`${l1}${r}:${l2}${r}`, label, { fill: head, font: { bold: true } });
+      merge(`${v1}${r}:${v2}${r}`, val, { fmt: label.startsWith('배경') ? '0.0' : undefined });
+    });
+    ws.getRow(r).height = 20;
+  });
+
+  merge('A8:A9', '거리(m)', { fill: head, font: { bold: true } });
+  merge('B8:B9', '기준 위치', { fill: head, font: { bold: true } });
+  merge('C8:E8', '우측 STI', { fill: head, font: { bold: true } });
+  merge('F8:H8', '중앙 STI', { fill: head, font: { bold: true } });
+  merge('I8:K8', '좌측 STI', { fill: head, font: { bold: true } });
+  merge('L8:L9', '음압 dB(A)', { fill: head, font: { bold: true } });
+  merge('M8:M9', '비고', { fill: head, font: { bold: true } });
+  ['C', 'F', 'I'].forEach(col0 => {
+    const c0 = ws.getColumn(col0).number;
+    ['1차', '2차', '평균'].forEach((t, i) => put(ws.getCell(9, c0 + i).address, t, { fill: head, font: { bold: true } }));
+  });
+
+  DISTS.forEach(([d, ref], i) => {
+    const r = 10 + i, row = pts[d] || {};
+    put(`A${r}`, d, { font: { bold: true } });
+    put(`B${r}`, ref);
+    const third = [];
+    POS.forEach(([p, pl], j) => {
+      const st = posStats(row, p);
+      const c0 = 3 + j * 3;
+      const warn = !!st.flag;
+      put(ws.getCell(r, c0).address, isNum(st.v[0]) ? st.v[0] : null, { fmt: '0.00', fill: warn ? warnFill : undefined });
+      put(ws.getCell(r, c0 + 1).address, isNum(st.v[1]) ? st.v[1] : null, { fmt: '0.00', fill: warn ? warnFill : undefined });
+      put(ws.getCell(r, c0 + 2).address, st.avg, { fmt: '0.00', fill: avgFill, font: { bold: true } });
+      if (isNum(st.v[2])) third.push(`${pl[0]} 3차 ${st.v[2].toFixed(2)}`);
+    });
+    put(`L${r}`, isNum(row.spl) ? row.spl : null, { fmt: '0.0' });
+    put(`M${r}`, [third.join(', '), row.note].filter(Boolean).join(' / '), { align: { horizontal: 'left' }, font: { size: 9 } });
+    ws.getRow(r).height = 24;
+  });
+
+  merge('A20:M20', '※ 거리는 시작점(SP1) 기준입니다. 지점마다 2회 측정하고, 두 값의 차이가 0.03을 넘으면 한 번 더 측정해 비고에 적습니다. 평균은 입력된 1·2·3차 값 모두의 평균입니다. 붉은 칸은 1·2차 차이가 0.03을 넘는데 3차 값이 없는 곳입니다.', { font: { size: 9 }, align: { horizontal: 'left' }, border: false });
+  ws.getRow(20).height = 30;
+  merge('A21:B23', '특이사항', { fill: head, font: { bold: true } });
+  merge('C21:M23', m.notes, { align: { horizontal: 'left', vertical: 'top' } });
+}
+
+function buildPhotoSheet(wb, names) {
+  const ws = wb.addWorksheet('사진 목록');
+  ws.columns = [{ header: '파일 이름 (photos 폴더)', key: 'f', width: 30 }, { header: '기록지', key: 's', width: 20 }, { header: '거리(m)', key: 'd', width: 10 }, { header: '찍은 시각', key: 't', width: 20 }];
+  ws.getRow(1).font = { name: '맑은 고딕', size: 10, bold: true };
+  rec.photos.forEach((ph, i) => ws.addRow({ f: names[i], s: sheetLabel(ph.sheet), d: ph.d ? Number(ph.d) : '기타', t: new Date(ph.at).toLocaleString('ko-KR') }));
+}
+
+async function makeZip() {
+  const btn = $('zip-make');
+  btn.disabled = true; sendStatus('파일을 만드는 중입니다…');
+  try {
+    await Promise.all([loadLib('lib/exceljs.min.js', 'ExcelJS'), loadLib('lib/jszip.min.js', 'JSZip')]);
+  } catch (e) {
+    btn.disabled = false;
+    sendStatus('엑셀 도구를 불러오지 못했습니다. 인터넷이 되는 곳에서 이 페이지를 한 번 새로 고침한 뒤 다시 눌러 주세요.', 'warn');
+    return;
+  }
+  try {
+    const sender = $('sender').value.trim();
+    const wb = new ExcelJS.Workbook();
+    wb.creator = sender || 'STI 시험 가이드';
+    let idx = 0;
+    KINDS.forEach(k => COMBOS.forEach(c => buildSheet(wb, c, k, ++idx, sender)));
+    const names = rec.photos.map(photoName);
+    buildPhotoSheet(wb, names);
+    const zip = new JSZip();
+    const now = new Date();
+    const p2 = n => String(n).padStart(2, '0');
+    const stamp = `${p2(now.getMonth() + 1)}${p2(now.getDate())}-${p2(now.getHours())}${p2(now.getMinutes())}`;
+    zip.file(`STI_measurement_${stamp}.xlsx`, await wb.xlsx.writeBuffer());
+    zip.file('records.json', JSON.stringify({
+      sender, exportedAt: now.toISOString(), sheets: rec.sheets,
+      photos: rec.photos.map((ph, i) => ({ file: 'photos/' + names[i], sheet: ph.sheet, d: ph.d, at: ph.at })),
+    }, null, 2));
+    rec.photos.forEach((ph, i) => zip.file('photos/' + names[i], ph.buf));
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+    const safe = (sender || '이름없음').replace(/[\\/:*?"<>|\s]+/g, '_');
+    rec.zip = new File([blob], `STI기록_${safe}_${stamp}.zip`, { type: 'application/zip' });
+    const mb = (blob.size / 1048576).toFixed(1);
+    sendStatus(`파일이 준비됐습니다: ${rec.zip.name} (${mb} MB). 아래 버튼으로 보내세요.`, 'ok');
+  } catch (e) {
+    sendStatus('파일을 만들지 못했습니다. 다시 눌러 주세요.', 'warn');
+  } finally {
+    btn.disabled = false; renderSend();
+  }
+}
+function markSent() { try { localStorage.setItem(LKEY, new Date().toISOString()); } catch (e) {} renderSend(); }
+async function shareZip() {
+  try {
+    await navigator.share({ files: [rec.zip], title: 'STI 측정 기록' });
+    markSent(); sendStatus('보냈습니다. 받는 사람이 ZIP 파일을 받았는지 확인하세요.', 'ok');
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+    sendStatus('보내기 창을 열지 못했습니다. [파일로 저장]을 누른 뒤 카톡이나 메일에 직접 첨부해 주세요.', 'warn');
+  }
+}
+function saveZip() {
+  const a = el('a', { href: URL.createObjectURL(rec.zip), download: rec.zip.name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  markSent(); sendStatus('다운로드 폴더에 저장했습니다. 카톡이나 메일에 첨부해 보내세요.', 'ok');
+}
+
+async function initRecord() {
+  buildRecord(); renderRec(); renderPhotos();
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  try {
+    rec.idb = await idbOpen();
+    rec.photos = ((await idbDo('readonly', st => st.getAll())) || []).sort((a, b) => (a.at < b.at ? -1 : 1));
+  } catch (e) { rec.idb = null; rec.idbOk = false; }
+  renderRec(); renderPhotos();
+  // 오프라인에서도 열리도록 페이지와 도구를 폰에 보관
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('sw.js').then(() => navigator.serviceWorker.ready)
+      .then(() => { rec.offline = 'ready'; renderStatus(); })
+      .catch(() => { rec.offline = 'no'; renderStatus(); });
+  } else { rec.offline = 'no'; renderStatus(); }
+}
+initRecord();
 </script>
 </body>
 </html>
