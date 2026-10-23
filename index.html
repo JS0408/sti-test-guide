@@ -153,10 +153,15 @@ td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-spa
 .status { font-size: .88rem; border-radius: 8px; padding: 8px 12px; background: var(--sunken); color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
 .status.warn { background: var(--warn-soft); color: var(--warn); }
 .status.ok { background: var(--ok-soft); color: var(--ok); }
-.rec-bar { display: grid; gap: 8px; }
+.rec-bar { display: grid; gap: 8px; background: var(--bg); padding-block: 8px; border-bottom: 1px solid var(--line); }
+.dist-nav { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.dist-nav button { flex: none; min-width: 44px; min-height: 36px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; font: 500 .85rem var(--f-mono); cursor: pointer; }
+.dist-nav button[data-full="true"] { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.dist-nav button[data-some="true"]:not([data-full="true"]) { border-color: var(--accent); }
+.pt-card { scroll-margin-top: 150px; }
 .seg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .seg .lbl { font-size: .8rem; color: var(--muted); font-weight: 700; min-width: 5.5em; }
-.seg button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 .92rem var(--f-body); padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+.seg button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 .92rem var(--f-body); padding: 8px 14px; min-height: 40px; border-radius: 8px; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #2a1c00; }
 .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
 .field { display: grid; gap: 3px; min-width: 0; }
@@ -182,7 +187,7 @@ select:focus-visible, textarea:focus-visible, label.btn:focus-within { outline: 
 .avg { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: .95rem; text-align: center; padding: 4px; border-radius: 6px; background: var(--sunken); }
 .avg small { font-family: var(--f-body); color: var(--muted); font-size: .72rem; margin-right: 4px; }
 .flag { font-size: .74rem; color: var(--warn); line-height: 1.35; }
-.pt-extra { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; gap: 8px; align-items: end; }
+.pt-extra { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: end; }
 label.btn { display: inline-flex; align-items: center; gap: 6px; position: relative; white-space: nowrap; }
 label.btn.on { border-color: var(--accent); }
 .thumbs { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -201,6 +206,17 @@ label.btn.on { border-color: var(--accent); }
 .lightbox img { max-width: 100%; max-height: 100%; margin: auto; object-fit: contain; min-height: 0; }
 .lb-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #eef0ee; font-size: .9rem; }
 .lb-bar .cap { margin-right: auto; }
+.lb-val { display: inline-flex; align-items: center; gap: 6px; }
+.lb-val .in { width: 6.5em; background: #fff; color: #1d2327; border-color: #fff; }
+.slot { display: grid; grid-template-columns: 38px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 6px; align-items: center; text-align: left;
+  min-height: 52px; padding: 6px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; border-radius: 8px; border: 1px dashed var(--line); background: var(--bg); color: var(--ink); font: 500 .85rem var(--f-body); cursor: pointer; }
+.slot-img { grid-row: 1 / 3; width: 38px; height: 38px; border-radius: 5px; background: var(--sunken) center / cover no-repeat; }
+.slot-t { font-weight: 700; }
+.slot-s { font-size: .74rem; color: var(--muted); font-family: var(--f-mono); }
+.slot[data-has="true"] { border-style: solid; border-color: var(--ok); background: var(--ok-soft); }
+.slot[data-has="true"] .slot-s { color: var(--ok); font-weight: 500; }
+.slot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.pt-extra .slot { min-width: 110px; }
 .send { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
 .send .field { max-width: 22rem; }
 .send-sum { font-size: .9rem; color: var(--muted); }
@@ -210,15 +226,27 @@ label.btn.on { border-color: var(--accent); }
 .btn:disabled { opacity: .5; cursor: wait; }
 @media (max-width: 640px) {
   nav.tabs { position: static; gap: 5px; }
-  nav.tabs button { padding: 6px 9px; font-size: .85rem; }
+  .rec-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; }
+  nav.tabs button { padding: 8px 10px; min-height: 40px; font-size: .88rem; }
   nav.tabs button small { display: none; }
+  .seg .lbl { min-width: 0; width: 100%; }
+  .seg button { flex: 1; }
+  .pos-grid { gap: 6px; }
+  .pt-card { padding: 10px; gap: 8px; }
+  .slot { grid-template-columns: 1fr; grid-template-rows: auto auto auto; justify-items: center; text-align: center; row-gap: 2px; padding: 6px 4px; }
+  .slot-img { grid-row: auto; width: 44px; height: 44px; }
+  .pt-extra .slot { min-width: 84px; }
+  .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px; }
+  .send .btn.primary, .send .btn { min-height: 46px; }
+  .send-row .btn { flex: 1 1 auto; }
+  .lb-bar { gap: 6px; }
+  .lb-bar .cap { width: 100%; }
+  .lb-bar .btn { min-height: 44px; }
 }
 @media (max-width: 520px) {
   h1 { font-size: 1.5rem; }
   .step-row { padding: 12px; gap: 10px; }
   .pt-card { padding: 12px; }
-  .pt-extra { grid-template-columns: minmax(0, 1fr) auto; }
-  .pt-extra .note-f { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
 </style>
@@ -255,20 +283,21 @@ label.btn.on { border-color: var(--accent); }
     <div class="rec-bar">
       <div class="seg" id="seg-combo" role="group" aria-label="스피커 조합"><span class="lbl">스피커 조합</span></div>
       <div class="seg" id="seg-kind" role="group" aria-label="구분"><span class="lbl">구분</span></div>
+      <div class="dist-nav" id="dist-nav" aria-label="거리로 이동"></div>
     </div>
     <div class="fields" id="rec-fields"></div>
-    <p class="lead">거리마다 우측·중앙·좌측 값을 입력하세요. 칸에서 벗어나면 이 휴대폰에 바로 저장됩니다. 1·2차 차이가 0.03을 넘으면 빨간 글씨로 3차 측정을 알려 줍니다.</p>
+    <p class="lead">측정이 끝날 때마다 해당 칸(예: 10m 중앙 <b>1차</b>)을 누르면 카메라가 열립니다. XL2 화면이 잘 보이게 찍으면 그 칸에 저장됩니다. 지점마다 1회만 해도, 2·3회까지 해도 됩니다. 찍은 칸을 누르면 크게 보기·다시 찍기·삭제를 할 수 있고, 원하면 값을 직접 넣을 수도 있습니다.</p>
     <div class="pts" id="rec-pts"></div>
     <div class="fields"><label class="field" style="grid-column: 1 / -1"><span>특이사항 (볼륨 설정, 1m 음압, 환경 변화 등)</span><textarea class="in" id="m-notes" rows="3"></textarea></label></div>
     <div class="photo-sec">
       <div class="photo-head">
-        <h3>사진 <span class="num" id="ph-count"></span></h3>
+        <h3>기타 사진 <span class="num" id="ph-count"></span></h3>
         <label class="btn">카메라로 찍기<input class="vh" type="file" id="ph-cam" accept="image/*" capture="environment"></label>
         <label class="btn">앨범에서 고르기<input class="vh" type="file" id="ph-pick" accept="image/*" multiple></label>
       </div>
       <p class="status" id="ph-status" hidden></p>
       <div class="gallery" id="gallery"></div>
-      <p class="lead">거리 카드의 [사진] 버튼으로 찍으면 그 지점 사진으로 묶입니다. 종이 기록지, 장비 설치 모습, 볼륨 눈금 같은 사진은 여기서 올리세요.</p>
+      <p class="lead">측정 칸 말고 남겨 둘 사진(종이 기록지, 장비 설치 모습, 볼륨 눈금 등)은 여기서 올리세요.</p>
     </div>
 
     <section class="send" aria-labelledby="send-h">
@@ -294,6 +323,8 @@ label.btn.on { border-color: var(--accent); }
   <img id="lb-img" alt="">
   <div class="lb-bar">
     <span class="cap" id="lb-cap"></span>
+    <label class="lb-val" id="lb-val-f">값(선택) <input class="in num" id="lb-val" type="text" inputmode="decimal" autocomplete="off"></label>
+    <button class="btn primary" id="lb-retake" type="button">다시 찍기</button>
     <button class="btn danger" id="lb-del" type="button">삭제</button>
     <span id="lb-confirm" hidden>정말 삭제할까요? <button class="btn danger" id="lb-del-yes" type="button">삭제</button></span>
     <button class="btn" id="lb-close" type="button">닫기</button>
@@ -417,7 +448,7 @@ label.btn.on { border-color: var(--accent); }
 <template id="tpl-roles">
   <div class="roles">
     <div class="role"><span class="tag">A</span><h3>측정 담당</h3><p>XL2를 다루고 지점마다 측정 버튼을 누릅니다. 측정 중 주변에 "조용히"를 알립니다.</p></div>
-    <div class="role"><span class="tag">B</span><h3>기록 담당</h3><p>측정 기록 탭에 값을 입력하고 2회 값 차이를 확인합니다. 다음 지점을 불러 줍니다.</p></div>
+    <div class="role"><span class="tag">B</span><h3>기록 담당</h3><p>측정 기록 탭에서 칸을 눌러 XL2 화면을 찍고, 1·2차 값 차이를 확인합니다. 다음 지점을 불러 줍니다.</p></div>
     <div class="role"><span class="tag">C</span><h3>음원·장비 담당</h3><p>컨트롤러 옆 테이블에 앉아 음원 재생·정지, 볼륨, 조합 교체를 맡습니다. 무전기로 A와 연락합니다.</p></div>
     <div class="role"><span class="tag">D</span><h3>안전 담당</h3><p>경광봉으로 차량·사람을 통제하고, 차량이 오면 측정을 멈추라고 알립니다.</p></div>
   </div>
@@ -614,7 +645,7 @@ const PHASES = [
           '소음 환경이 달라지면(환기팬 가동 등) 다시 잽니다.'],
         ok: '배경소음 값이 기록지에 적혀 있다.' },
       { t: '조합 1 측정: TS + 100W', time: '08:30', who: 'A·B', how: [
-          '측정 기록 탭에서 TS + 100W · 자체를 고르고 측정 일시, 측정자, 음원 입력 방식, STIPA 판, 배경소음을 입력합니다.',
+          '측정 기록 탭에서 TS + 100W · 자체를 고르고 측정 일시, 측정자, 음원 입력 방식, STIPA 판, 배경소음을 입력합니다. 지점마다 측정이 끝나면 그 칸을 눌러 XL2 화면을 찍습니다.',
           'C가 STIPA 음원을 재생합니다(측정이 끝날 때까지 계속 틀어 둡니다).',
           '측정법 탭의 순서대로 27개 지점을 2회씩 측정합니다.'],
         ok: '기록지 1번의 27개 지점 1차·2차 칸이 모두 채워졌다.' },
@@ -629,10 +660,10 @@ const PHASES = [
       { t: '조합 2 측정: TS + 300W', time: '09:50', who: 'A·B', how: ['측정 기록 탭에서 조합을 TS + 300W로 바꾸고 조합 1과 똑같이 측정합니다.'],
         ok: '기록지 2번 완료.' },
       { t: '오전 기록을 확인하고 사진으로 남깁니다', time: '10:50', who: 'B', how: [
-          '측정 기록 탭에서 조합 2개 모두 27/27 지점이 채워졌는지 봅니다. 빈칸이 있으면 점심 전에 다시 측정합니다.',
-          '빨간 글씨(1·2차 차이 0.03 초과)가 남은 곳에 3차 값을 넣었는지 봅니다.',
+          '측정 기록 탭에서 조합 2개 모두 거리 카드가 3/3(초록 테두리)인지 봅니다. 빈 곳이 있으면 점심 전에 다시 측정합니다.',
+          '1·2차 차이가 0.03을 넘은 곳은 3차 칸도 찍었는지 봅니다.',
           '종이 기록지를 함께 썼다면 측정 기록 탭에서 사진으로 올려 둡니다.'],
-        ok: '빈칸·빨간 글씨 없음.' },
+        ok: '모든 거리 카드 3/3.' },
     ]},
   { id: 'pm', tab: '시험 오후', when: '10/30 (금) 오후', title: '본부 입회시험',
     meta: ['입회 범위에 따라 1~2시간', '입회: 도로공사 전북본부 교통부'],
@@ -787,7 +818,7 @@ document.getElementById('reset-yes').addEventListener('click', () => {
   rc.hidden = true; refresh();
 });
 
-// ── 측정 기록: 값은 localStorage, 사진은 IndexedDB(이 휴대폰에만). [기록 보내기]로 엑셀 기록지+사진 ZIP을 만듦 ──
+// ── 측정 기록: 칸마다 XL2 화면 사진(IndexedDB), 머리 정보·선택 입력값은 localStorage. 모두 이 휴대폰에만. [기록 보내기]로 엑셀 기록지+사진 ZIP ──
 const DISTS = [[1, 'SP1 +1m'], [10, 'SP1 +10m'], [40, 'SP1 +40m'], [101, 'SP2 +1m'], [110, 'SP2 +10m'], [140, 'SP2 +40m'], [201, 'SP3 +1m'], [210, 'SP3 +10m'], [240, 'SP3 +40m']];
 const POS = [['R', '우측'], ['C', '중앙'], ['L', '좌측']];
 const COMBOS = [['ts100', 'TS + 100W', '100W'], ['ts300', 'TS + 300W', '300W']];
@@ -873,10 +904,23 @@ function numInput(id, ph, onVal) {
   });
   return inp;
 }
-function photoButton(d) {
-  const inp = el('input', { class: 'vh', type: 'file', accept: 'image/*', capture: 'environment', id: 'cam-' + d });
-  inp.addEventListener('change', () => { addPhotos([...inp.files], d); inp.value = ''; });
-  return el('label', { class: 'btn cam-btn' }, '사진', inp);
+// 측정 칸 버튼: 누르면 카메라가 열리고, 찍은 사진이 그 칸(slot)에 저장됨
+const SLOT_NAMES = { R: '우측', C: '중앙', L: '좌측', spl: '음압' };
+const slotLabel = slot => slot === 'spl' ? '음압' : `${SLOT_NAMES[slot[0]]} ${slot[1]}차`;
+const findShot = (sheet, d, slot) => rec.photos.find(p => p.sheet === sheet && p.d === String(d) && p.slot === slot);
+let shotTarget = null;
+function shoot(d, slot) {
+  shotTarget = { sheet: sheetId(), d: String(d), slot };
+  $('shot-in').click();
+}
+function slotButton(d, slot, text) {
+  const b = el('button', { class: 'slot', type: 'button', id: `sl-${d}-${slot}`, 'aria-label': `${d}m ${slotLabel(slot)} 사진` },
+    el('span', { class: 'slot-img' }), el('span', { class: 'slot-t', text }), el('span', { class: 'slot-s' }));
+  b.addEventListener('click', () => {
+    const ph = findShot(sheetId(), d, slot);
+    if (ph) openLb(ph); else shoot(d, slot);
+  });
+  return b;
 }
 
 function buildRecord() {
@@ -910,25 +954,42 @@ function buildRecord() {
     const grid = el('div', { class: 'pos-grid' });
     POS.forEach(([p, pl]) => {
       const col = el('div', { class: 'pos' }, el('span', { class: 'pos-h', text: pl }));
-      [1, 2, 3].forEach(n => col.append(numInput(`v-${d}-${p}${n}`, `${n}차`, v => write({ pts: { [d]: { [p + n]: v } } }))));
-      col.append(el('div', { class: 'avg', id: `a-${d}-${p}` }), el('div', { class: 'flag', id: `f-${d}-${p}` }));
+      [1, 2, 3].forEach(n => col.append(slotButton(d, p + n, `${n}차`)));
+      col.append(el('div', { class: 'avg', id: `a-${d}-${p}`, hidden: '' }), el('div', { class: 'flag', id: `f-${d}-${p}` }));
       grid.append(col);
     });
-    const spl = numInput(`s-${d}`, '음압 dB(A)', v => write({ pts: { [d]: { spl: v } } }));
-    const note = el('input', { class: 'in', id: `n-${d}`, type: 'text', autocomplete: 'off', placeholder: '비고' });
+    const note = el('input', { class: 'in', id: `n-${d}`, type: 'text', autocomplete: 'off', placeholder: '비고 (선택)' });
     note.addEventListener('change', () => write({ pts: { [d]: { note: note.value.trim() } } }));
     $('rec-pts').append(el('article', { class: 'pt-card', id: 'pt-' + d },
       el('div', { class: 'pt-head' }, el('span', { class: 'd', text: d + 'm' }), el('span', { class: 'ref', text: ref }), el('span', { class: 'cnt', id: 'c-' + d })),
       grid,
-      el('div', { class: 'pt-extra' },
-        el('label', { class: 'field' }, el('span', { text: '음압 dB(A)' }), spl),
-        el('label', { class: 'field note-f' }, el('span', { text: '비고' }), note),
-        photoButton(d)),
-      el('div', { class: 'thumbs', id: 't-' + d })));
+      el('div', { class: 'pt-extra' }, slotButton(d, 'spl', '음압'), el('label', { class: 'field note-f' }, el('span', { text: '비고' }), note))));
   });
 
-  $('ph-cam').addEventListener('change', e => { addPhotos([...e.target.files], ''); e.target.value = ''; });
-  $('ph-pick').addEventListener('change', e => { addPhotos([...e.target.files], ''); e.target.value = ''; });
+  DISTS.forEach(([d]) => {
+    const b = el('button', { type: 'button', id: 'dn-' + d, text: String(d) });
+    b.addEventListener('click', () => $('pt-' + d).scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    $('dist-nav').append(b);
+  });
+
+  const shotIn = el('input', { class: 'vh', type: 'file', accept: 'image/*', capture: 'environment', id: 'shot-in', tabindex: '-1', 'aria-hidden': 'true' });
+  shotIn.addEventListener('change', () => {
+    const f = shotIn.files[0], t = shotTarget;
+    shotIn.value = ''; shotTarget = null;
+    if (f && t) addShot(t, f);
+  });
+  $('rec').append(shotIn);
+  $('lb-retake').addEventListener('click', () => { const ph = rec.lb; if (!ph) return; closeLb(); shotTarget = { sheet: ph.sheet, d: ph.d, slot: ph.slot }; $('shot-in').click(); });
+  $('lb-val').addEventListener('change', () => {
+    const ph = rec.lb; if (!ph || !ph.slot) return;
+    const v = toNum($('lb-val').value);
+    $('lb-val').setAttribute('aria-invalid', String(v === undefined));
+    if (v === undefined) return;
+    rec.sheets[ph.sheet] = deepMerge(rec.sheets[ph.sheet] || {}, { pts: { [ph.d]: { [ph.slot]: v } } });
+    saveData(); dropZip(); renderRec();
+  });
+  $('ph-cam').addEventListener('change', e => { addPhotos([...e.target.files]); e.target.value = ''; });
+  $('ph-pick').addEventListener('change', e => { addPhotos([...e.target.files]); e.target.value = ''; });
   try { $('sender').value = localStorage.getItem(NKEY) || ''; } catch (e) {}
   $('sender').addEventListener('change', () => { try { localStorage.setItem(NKEY, $('sender').value.trim()); } catch (e) {} dropZip(); });
   $('zip-make').addEventListener('click', makeZip);
@@ -963,22 +1024,32 @@ function renderRec() {
   META.forEach(([k, , type]) => setVal($('m-' + k), type === 'num' ? fmt(meta[k], 1) : meta[k]));
   setVal($('m-notes'), meta.notes);
 
-  let done = 0;
+  const paint = (d, slot, val, digits) => {
+    const b = $(`sl-${d}-${slot}`), ph = findShot(sid, d, slot);
+    const img = b.querySelector('.slot-img');
+    img.style.backgroundImage = ph ? `url("${photoUrl(ph)}")` : '';
+    b.dataset.has = String(!!ph || isNum(val));
+    b.querySelector('.slot-s').textContent = isNum(val) ? val.toFixed(digits) : ph ? '✓' : '찍기';
+    return !!ph || isNum(val);
+  };
   DISTS.forEach(([d]) => {
     const row = pts[d] || {};
     let full = 0;
     POS.forEach(([p]) => {
+      const got = [1, 2, 3].map(n => paint(d, p + n, row[p + n], 2));
       const st = posStats(row, p);
-      st.v.forEach((x, i) => setVal($(`v-${d}-${p}${i + 1}`), fmt(x, 2)));
-      $(`a-${d}-${p}`).replaceChildren(el('small', { text: '평균' }), st.avg == null ? '–' : st.avg.toFixed(2));
+      const a = $(`a-${d}-${p}`);
+      a.hidden = st.avg == null;
+      a.replaceChildren(el('small', { text: '평균' }), st.avg == null ? '' : st.avg.toFixed(2));
       $(`f-${d}-${p}`).textContent = st.flag;
-      if (st.full) full++;
+      if (got.some(Boolean)) full++;   // 1~3회 중 몇 번이든 찍었으면 측정한 위치로 셈
     });
-    setVal($('s-' + d), fmt(row.spl, 1));
+    paint(d, 'spl', row.spl, 1);
     setVal($('n-' + d), row.note);
     $('c-' + d).textContent = `${full}/3`;
     $('pt-' + d).dataset.full = String(full === 3);
-    done += full;
+    $('dn-' + d).dataset.full = String(full === 3);
+    $('dn-' + d).dataset.some = String(full > 0);
   });
   renderStatus();
   renderSend();
@@ -997,14 +1068,12 @@ function renderStatus() {
 }
 
 function countValues() {
-  let n = 0;
-  Object.values(rec.sheets).forEach(s => Object.values((s && s.pts) || {}).forEach(r => POS.forEach(([p]) => [1, 2, 3].forEach(k => { if (isNum(r[p + k])) n++; }))));
-  return n;
+  return rec.photos.filter(p => p.slot).length;
 }
 function renderSend() {
   let last = '';
   try { const t = localStorage.getItem(LKEY); if (t) last = ' · 마지막으로 보낸 시각 ' + new Date(t).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) {}
-  $('send-sum').textContent = `이 휴대폰에 저장된 기록: 측정값 ${countValues()}개 · 사진 ${rec.photos.length}장${last}`;
+  $('send-sum').textContent = `이 휴대폰에 저장된 기록: 측정 사진 ${countValues()}장 · 기타 사진 ${rec.photos.length - countValues()}장${last}`;
   const ready = !!rec.zip;
   $('zip-make').hidden = ready;
   $('zip-share').hidden = !(ready && navigator.canShare && navigator.canShare({ files: [rec.zip] }));
@@ -1016,33 +1085,51 @@ function sendStatus(msg, cls) {
 }
 function dropZip() { if (rec.zip) { rec.zip = null; sendStatus(''); renderSend(); } }
 
-// ── 사진: 긴 변 2400px JPEG로 줄여서 IndexedDB에 보관 ──
+// ── 사진: 긴 변 1600px JPEG로 줄여서 IndexedDB에 보관 ──
 async function shrink(file) {
   try {
     const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
-    const k = Math.min(1, 2400 / Math.max(bmp.width, bmp.height));
-    if (k === 1 && file.size < 3e6 && /^image\/(jpeg|png|webp)$/.test(file.type)) return file;
+    const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    if (k === 1 && file.size < 1.5e6 && /^image\/(jpeg|png|webp)$/.test(file.type)) return file;
     const c = document.createElement('canvas');
     c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
     c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
     return await new Promise((ok, no) => c.toBlob(b => (b ? ok(b) : no(new Error('encode'))), 'image/jpeg', 0.85));
   } catch (e) { return file; }
 }
-async function addPhotos(files, d) {
+async function storePhoto(file, meta) {
+  const blob = await shrink(file);
+  const ph = Object.assign({ at: new Date().toISOString(), type: blob.type || 'image/jpeg', buf: await blob.arrayBuffer() }, meta);
+  ph.id = await idbDo('readwrite', st => st.add(ph));
+  rec.photos.push(ph);
+  return ph;
+}
+async function addShot(t, file) {
+  if (!rec.idb) { photoStatus('이 브라우저에서는 사진을 저장할 수 없습니다. 일반 창에서 다시 열어 주세요.', 'warn'); return; }
+  rec.busy++; renderPhotos();
+  try {
+    const old = findShot(t.sheet, t.d, t.slot);
+    await storePhoto(file, { sheet: t.sheet, d: t.d, slot: t.slot });
+    if (old) await removePhoto(old);   // 다시 찍기: 새 사진이 저장된 뒤에 예전 사진을 지움
+  } catch (e) { photoStatus('사진을 저장하지 못했습니다. 휴대폰 저장 공간을 확인하세요.', 'warn'); }
+  rec.busy--;
+  dropZip(); renderRec(); renderPhotos();
+}
+async function addPhotos(files) {
   if (!rec.idb) { photoStatus('이 브라우저에서는 사진을 저장할 수 없습니다. 일반 창에서 다시 열어 주세요.', 'warn'); return; }
   let fail = 0;
   for (const f of files) {
     rec.busy++; renderPhotos();
-    try {
-      const blob = await shrink(f);
-      const ph = { sheet: sheetId(), d: d ? String(d) : '', at: new Date().toISOString(), type: blob.type || 'image/jpeg', buf: await blob.arrayBuffer() };
-      ph.id = await idbDo('readwrite', st => st.add(ph));
-      rec.photos.push(ph);
-    } catch (e) { fail++; }
+    try { await storePhoto(f, { sheet: sheetId(), d: '', slot: '' }); } catch (e) { fail++; }
     rec.busy--;
   }
   dropZip(); renderPhotos(); renderSend();
   if (fail) photoStatus(`사진 ${fail}장을 저장하지 못했습니다. 휴대폰 저장 공간을 확인하세요.`, 'warn');
+}
+async function removePhoto(ph) {
+  await idbDo('readwrite', st => st.delete(ph.id));
+  rec.photos = rec.photos.filter(p => p !== ph);
+  if (rec.urls[ph.id]) { URL.revokeObjectURL(rec.urls[ph.id]); delete rec.urls[ph.id]; }
 }
 function photoStatus(msg, cls) {
   const st = $('ph-status');
@@ -1050,18 +1137,17 @@ function photoStatus(msg, cls) {
 }
 
 function thumb(ph) {
-  const img = el('img', { src: photoUrl(ph), alt: (ph.d ? ph.d + 'm ' : '') + '사진', loading: 'lazy' });
-  const b = el('button', { class: 'ph', type: 'button', title: '크게 보기' }, img, ph.d ? el('span', { text: ph.d + 'm' }) : null);
+  const img = el('img', { src: photoUrl(ph), alt: '기타 사진', loading: 'lazy' });
+  const b = el('button', { class: 'ph', type: 'button', title: '크게 보기' }, img);
   b.addEventListener('click', () => openLb(ph));
   return b;
 }
 function renderPhotos() {
   const sid = sheetId();
-  const list = rec.photos.filter(p => p.sheet === sid);
-  $('gallery').replaceChildren(...(list.length ? list.map(thumb) : [el('p', { class: 'empty', text: '아직 이 기록지에 찍은 사진이 없습니다.' })]));
+  const list = rec.photos.filter(p => p.sheet === sid && !p.slot);
+  $('gallery').replaceChildren(...(list.length ? list.map(thumb) : [el('p', { class: 'empty', text: '아직 이 기록지에 올린 기타 사진이 없습니다.' })]));
   $('ph-count').textContent = list.length ? `(${list.length})` : '';
-  DISTS.forEach(([d]) => $('t-' + d).replaceChildren(...list.filter(p => p.d === String(d)).map(thumb)));
-  if (rec.busy) photoStatus(`사진 저장하는 중… (${rec.busy}장)`);
+  if (rec.busy) photoStatus('사진 저장하는 중…');
   else if ($('ph-status').className === 'status') photoStatus('');
 }
 
@@ -1069,18 +1155,24 @@ function openLb(ph) {
   rec.lb = ph;
   $('lb-img').src = photoUrl(ph);
   const when = new Date(ph.at).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  $('lb-cap').textContent = `${sheetLabel(ph.sheet)}${ph.d ? ' · ' + ph.d + 'm' : ''} · ${when}`;
+  $('lb-cap').textContent = `${sheetLabel(ph.sheet)}${ph.d ? ` · ${ph.d}m` : ''}${ph.slot ? ' · ' + slotLabel(ph.slot) : ' · 기타'} · ${when}`;
   $('lb-confirm').hidden = true; $('lb-del').hidden = false;
+  $('lb-retake').hidden = !ph.slot;
+  $('lb-val-f').hidden = !ph.slot;
+  if (ph.slot) {
+    const v = (((rec.sheets[ph.sheet] || {}).pts || {})[ph.d] || {})[ph.slot];
+    $('lb-val').value = isNum(v) ? v.toFixed(ph.slot === 'spl' ? 1 : 2) : '';
+    $('lb-val').placeholder = ph.slot === 'spl' ? '예: 85.2' : '예: 0.62';
+    $('lb-val').setAttribute('aria-invalid', 'false');
+  }
   $('lb').hidden = false; $('lb-close').focus();
 }
 function closeLb() { $('lb').hidden = true; $('lb-img').removeAttribute('src'); rec.lb = null; }
 async function deletePhoto() {
   const ph = rec.lb; if (!ph) return;
   try {
-    await idbDo('readwrite', st => st.delete(ph.id));
-    rec.photos = rec.photos.filter(p => p !== ph);
-    if (rec.urls[ph.id]) { URL.revokeObjectURL(rec.urls[ph.id]); delete rec.urls[ph.id]; }
-    closeLb(); dropZip(); renderPhotos(); renderSend();
+    await removePhoto(ph);
+    closeLb(); dropZip(); renderRec(); renderPhotos();
   } catch (e) { $('lb-cap').textContent = '삭제하지 못했습니다.'; }
 }
 
@@ -1099,9 +1191,12 @@ function loadLib(src, name) {
   if (window[name]) return Promise.resolve();
   return new Promise((ok, no) => { const s = el('script', { src }); s.onload = ok; s.onerror = no; document.head.append(s); });
 }
-const photoName = (ph, i) => `${ph.sheet}_${ph.d ? ph.d + 'm' : 'etc'}_${String(i + 1).padStart(3, '0')}.${/png/.test(ph.type) ? 'png' : /webp/.test(ph.type) ? 'webp' : 'jpg'}`;
+const photoExt = ph => (/png/.test(ph.type) ? 'png' : /webp/.test(ph.type) ? 'webp' : 'jpg');
+const photoName = (ph, i) => ph.slot
+  ? `${ph.sheet}_${String(ph.d).padStart(3, '0')}m_${ph.slot === 'spl' ? 'SPL' : ph.slot[0] + '_' + ph.slot[1]}.${photoExt(ph)}`
+  : `${ph.sheet}_etc_${String(i + 1).padStart(3, '0')}.${photoExt(ph)}`;
 
-function buildSheet(wb, c, k, idx, sender) {
+function buildSheet(wb, c, k, idx, sender, names) {
   const [cid, clabel, watt] = c, [kid, klabel] = k;
   const data = rec.sheets[`${cid}-${kid}`] || {}, m = data.meta || {}, pts = data.pts || {};
   const ws = wb.addWorksheet(`${clabel.replace(/\s/g, '')} ${klabel}`, {
@@ -1124,7 +1219,7 @@ function buildSheet(wb, c, k, idx, sender) {
     if (o.fmt) cell.numFmt = o.fmt;
     return cell;
   };
-  const merge = (range, value, o = {}) => { ws.mergeCells(range); put(range.split(':')[0], value, o); styleRange(range, o); };
+  const merge = (range, value, o) => { ws.mergeCells(range); put(range.split(':')[0], value, o); if (o && o.border !== false || !o) range.split(':').length && styleRange(range, o); };
   function styleRange(range, o = {}) {
     if (o.border === false) return;
     const [a, b] = range.split(':');
@@ -1164,6 +1259,13 @@ function buildSheet(wb, c, k, idx, sender) {
     ['1차', '2차', '평균'].forEach((t, i) => put(ws.getCell(9, c0 + i).address, t, { fill: head, font: { bold: true } }));
   });
 
+  const linkOr = (ref, val, d, slot, o) => {
+    const ph = findShot(`${cid}-${kid}`, d, slot);
+    if (isNum(val) || !ph) return put(ref, isNum(val) ? val : null, o);
+    const cell = put(ref, { text: '사진', hyperlink: 'photos/' + names.get(ph) }, Object.assign({}, o, { font: { color: { argb: 'FF2B5F8A' }, underline: true } }));
+    cell.numFmt = undefined;
+    return cell;
+  };
   DISTS.forEach(([d, ref], i) => {
     const r = 10 + i, row = pts[d] || {};
     put(`A${r}`, d, { font: { bold: true } });
@@ -1172,18 +1274,19 @@ function buildSheet(wb, c, k, idx, sender) {
     POS.forEach(([p, pl], j) => {
       const st = posStats(row, p);
       const c0 = 3 + j * 3;
-      const warn = !!st.flag;
-      put(ws.getCell(r, c0).address, isNum(st.v[0]) ? st.v[0] : null, { fmt: '0.00', fill: warn ? warnFill : undefined });
-      put(ws.getCell(r, c0 + 1).address, isNum(st.v[1]) ? st.v[1] : null, { fmt: '0.00', fill: warn ? warnFill : undefined });
+      const fill = st.flag ? warnFill : undefined;
+      linkOr(ws.getCell(r, c0).address, st.v[0], d, p + '1', { fmt: '0.00', fill });
+      linkOr(ws.getCell(r, c0 + 1).address, st.v[1], d, p + '2', { fmt: '0.00', fill });
       put(ws.getCell(r, c0 + 2).address, st.avg, { fmt: '0.00', fill: avgFill, font: { bold: true } });
       if (isNum(st.v[2])) third.push(`${pl[0]} 3차 ${st.v[2].toFixed(2)}`);
+      else if (findShot(`${cid}-${kid}`, d, p + '3')) third.push(`${pl[0]} 3차 사진`);
     });
-    put(`L${r}`, isNum(row.spl) ? row.spl : null, { fmt: '0.0' });
+    linkOr(`L${r}`, row.spl, d, 'spl', { fmt: '0.0' });
     put(`M${r}`, [third.join(', '), row.note].filter(Boolean).join(' / '), { align: { horizontal: 'left' }, font: { size: 9 } });
     ws.getRow(r).height = 24;
   });
 
-  merge('A20:M20', '※ 거리는 시작점(SP1) 기준입니다. 지점마다 2회 측정하고, 두 값의 차이가 0.03을 넘으면 한 번 더 측정해 비고에 적습니다. 평균은 입력된 1·2·3차 값 모두의 평균입니다. 붉은 칸은 1·2차 차이가 0.03을 넘는데 3차 값이 없는 곳입니다.', { font: { size: 9 }, align: { horizontal: 'left' }, border: false });
+  merge('A20:M20', '※ 거리는 시작점(SP1) 기준입니다. 지점마다 2회 측정하고, 두 값의 차이가 0.03을 넘으면 한 번 더 측정해 비고에 적습니다. 지점마다 1~3회 측정할 수 있으며 빈칸은 측정하지 않은 회차입니다. 「사진」을 누르면 photos 폴더의 XL2 화면 사진이 열립니다(ZIP을 푼 뒤). 값이 입력된 칸은 숫자로 표시하고, 평균은 입력된 값의 평균입니다.', { font: { size: 9 }, align: { horizontal: 'left' }, border: false });
   ws.getRow(20).height = 30;
   merge('A21:B23', '특이사항', { fill: head, font: { bold: true } });
   merge('C21:M23', m.notes, { align: { horizontal: 'left', vertical: 'top' } });
@@ -1191,9 +1294,13 @@ function buildSheet(wb, c, k, idx, sender) {
 
 function buildPhotoSheet(wb, names) {
   const ws = wb.addWorksheet('사진 목록');
-  ws.columns = [{ header: '파일 이름 (photos 폴더)', key: 'f', width: 30 }, { header: '기록지', key: 's', width: 20 }, { header: '거리(m)', key: 'd', width: 10 }, { header: '찍은 시각', key: 't', width: 20 }];
+  ws.columns = [{ header: '파일 이름 (photos 폴더)', key: 'f', width: 32 }, { header: '기록지', key: 's', width: 18 }, { header: '거리(m)', key: 'd', width: 9 }, { header: '칸', key: 'k', width: 10 }, { header: '직접 넣은 값', key: 'v', width: 12 }, { header: '찍은 시각', key: 't', width: 20 }];
   ws.getRow(1).font = { name: '맑은 고딕', size: 10, bold: true };
-  rec.photos.forEach((ph, i) => ws.addRow({ f: names[i], s: sheetLabel(ph.sheet), d: ph.d ? Number(ph.d) : '기타', t: new Date(ph.at).toLocaleString('ko-KR') }));
+  rec.photos.forEach(ph => {
+    const v = ph.slot ? ((((rec.sheets[ph.sheet] || {}).pts || {})[ph.d] || {})[ph.slot]) : null;
+    const row = ws.addRow({ f: { text: names.get(ph), hyperlink: 'photos/' + names.get(ph) }, s: sheetLabel(ph.sheet), d: ph.d ? Number(ph.d) : '', k: ph.slot ? slotLabel(ph.slot) : '기타', v: isNum(v) ? v : '', t: new Date(ph.at).toLocaleString('ko-KR') });
+    row.getCell('f').font = { color: { argb: 'FF2B5F8A' }, underline: true };
+  });
 }
 
 async function makeZip() {
@@ -1210,9 +1317,9 @@ async function makeZip() {
     const sender = $('sender').value.trim();
     const wb = new ExcelJS.Workbook();
     wb.creator = sender || 'STI 시험 가이드';
+    const names = new Map(rec.photos.map((ph, i) => [ph, photoName(ph, i)]));
     let idx = 0;
-    KINDS.forEach(k => COMBOS.forEach(c => buildSheet(wb, c, k, ++idx, sender)));
-    const names = rec.photos.map(photoName);
+    KINDS.forEach(k => COMBOS.forEach(c => buildSheet(wb, c, k, ++idx, sender, names)));
     buildPhotoSheet(wb, names);
     const zip = new JSZip();
     const now = new Date();
@@ -1221,9 +1328,9 @@ async function makeZip() {
     zip.file(`STI_measurement_${stamp}.xlsx`, await wb.xlsx.writeBuffer());
     zip.file('records.json', JSON.stringify({
       sender, exportedAt: now.toISOString(), sheets: rec.sheets,
-      photos: rec.photos.map((ph, i) => ({ file: 'photos/' + names[i], sheet: ph.sheet, d: ph.d, at: ph.at })),
+      photos: rec.photos.map(ph => ({ file: 'photos/' + names.get(ph), sheet: ph.sheet, d: ph.d, slot: ph.slot || '', at: ph.at })),
     }, null, 2));
-    rec.photos.forEach((ph, i) => zip.file('photos/' + names[i], ph.buf));
+    rec.photos.forEach(ph => zip.file('photos/' + names.get(ph), ph.buf));
     const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
     const safe = (sender || '이름없음').replace(/[\\/:*?"<>|\s]+/g, '_');
     rec.zip = new File([blob], `STI기록_${safe}_${stamp}.zip`, { type: 'application/zip' });
