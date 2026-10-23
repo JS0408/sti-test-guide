@@ -411,7 +411,7 @@ label.btn.on { border-color: var(--accent); }
 <template id="tpl-overview">
   <div class="note tip">
     <h3>시험 목적</h3>
-    <p>스피커를 <b>100m 간격</b>으로만 설치해도(50·150m는 리피터 앰프만) 위치별 평균 STI <b class="num">0.46</b> 이상이 나오는지 확인. TS 스피커 + 압축드라이버 100W / 300W 두 조합 비교.</p>
+    <p>스피커를 <b>100m 간격</b>으로만 설치해도(50·150m는 리피터 앰프만) 위치별 평균 STI <b class="num">0.46</b> 이상이 나오는지 확인. TS 스피커 + 압축드라이버 300W → 100W 순서로 두 조합 비교.</p>
   </div>
 
   <div class="note decide">
@@ -602,7 +602,7 @@ const PHASES = [
         ok: '반복 측정 차이 0.03 이내' },
       { t: '스피커 삼각대 3개 조립', who: 'C', how: [
           'TS 3개 장착 (여분 TS 1개 별도)',
-          '100W 드라이버 장착 (순서: 100W → 300W)',
+          '300W 드라이버 장착 (순서: 300W → 100W)',
           'SP1 / SP2 / SP3 이름표'],
         ok: '3개 조립 완료' },
       { t: '기록지 · 소모품 준비', who: 'B', how: [
@@ -655,11 +655,11 @@ const PHASES = [
           '케이블은 도로 가장자리로'],
         ok: '앰프 5 · LAN 5 연결, 케이블 정리' },
       { t: '스피커 설치', time: '12:00', who: 'C 외 1명', how: [
-          'TS(100W) 3대: 0 · 100 · 200m (50·150m엔 없음)',
+          'TS(300W) 3대: 0 · 100 · 200m (50·150m엔 없음)',
           '모두 진행 방향(→), 높이·각도 동일',
           '앰프1·3·5에 연결',
-          '300W 드라이버는 각 스피커 옆 갓길에 대기'],
-        ok: 'TS(100W) 3대 설치, 300W 3개 대기' },
+          '100W 드라이버는 각 스피커 옆 갓길에 대기'],
+        ok: 'TS(300W) 3대 설치, 100W 3개 대기' },
       { t: '전원 켜고 소리 확인', time: '13:30', who: 'C·A', how: [
           '볼륨 최소 → 컨트롤러 → 앰프1~5 ON',
           'STIPA 재생, 볼륨 천천히 올리기',
@@ -698,20 +698,20 @@ const PHASES = [
           '50m 중앙에서 30초~1분 dB(A) → 측정 기록 탭 「배경소음」 (2조합 모두)',
           '환기팬 등 환경이 바뀌면 다시'],
         ok: '배경소음 입력 완료' },
-      { t: '조합 1 측정: TS + 100W', time: '08:30', who: 'A·B', how: [
-          '측정 기록 탭: TS + 100W · 자체 선택, 상단 정보 입력',
+      { t: '조합 1 측정: TS + 300W', time: '08:30', who: 'A·B', how: [
+          '측정 기록 탭: TS + 300W · 자체 선택, 상단 정보 입력',
           '음원 재생 (끝까지 유지)',
           '27곳 × 2회, 측정마다 해당 칸 촬영'],
         ok: '거리 카드 9개 모두 3/3 (초록)' },
-      { t: '조합 교체: TS + 300W', time: '09:30', who: 'C', how: [
+      { t: '조합 교체: TS + 100W', time: '09:30', who: 'C', how: [
           '음원 정지, 볼륨 최소 (앰프 전원 OFF 권장)',
-          'SP1~3 드라이버 100W → 300W',
+          'SP1~3 드라이버 300W → 100W',
           '삼각대 위치·높이·방향 그대로인지 확인',
           '볼륨 원위치 → 음원 재생',
           'SP1 1m 앞 음압 측정 → 조합 1과 비교 기록'],
         ok: '3대 교체, 소리 정상',
         warn: '볼륨 올린 채 드라이버 분리·장착 금지' },
-      { t: '조합 2 측정: TS + 300W', time: '09:50', who: 'A·B', how: ['조합을 TS + 300W로 바꾸고 조합 1과 동일하게'],
+      { t: '조합 2 측정: TS + 100W', time: '09:50', who: 'A·B', how: ['조합을 TS + 100W로 바꾸고 조합 1과 동일하게'],
         ok: '거리 카드 9개 모두 3/3' },
       { t: '오전 기록 확인', time: '10:50', who: 'B', how: [
           '2조합 모두 3/3인지, 빈 곳은 점심 전 재측정',
@@ -731,7 +731,7 @@ const PHASES = [
         ok: '측정 방법 · 범위 합의' },
       { t: '입회 범위 측정', who: 'A·B', how: [
           '합의한 범위대로 측정',
-          '설치된 TS + 300W부터 시작 (교체 1회 절약)',
+          '설치된 TS + 100W부터 시작 (교체 1회 절약)',
           '측정값은 바로 입회자에게 보여 주기'],
         ok: '입회 범위 측정 완료' },
       { t: '기록지 서명', who: '책임자', how: ['기록지(또는 결과표)에 입회자 서명 · 날짜', '서명한 종이 → 측정 기록 탭(입회) 기타 사진'],
@@ -892,7 +892,7 @@ function allDists() {
 const distRows = () => allDists().map(d => [d, refOf(d)]);
 const hasData = d => rec.photos.some(p => p.slot && p.d === String(d)) || Object.values(rec.sheets).some(sh => sh && sh.pts && sh.pts[d] && Object.values(sh.pts[d]).some(v => v !== '' && v != null));
 const POS = [['R', '우측'], ['C', '중앙'], ['L', '좌측']];
-const COMBOS = [['ts100', 'TS + 100W', '100W'], ['ts300', 'TS + 300W', '300W']];
+const COMBOS = [['ts300', 'TS + 300W', '300W'], ['ts100', 'TS + 100W', '100W']];
 const KINDS = [['self', '자체'], ['wit', '입회']];
 const META = [
   ['when', '측정 일시', 'text', '10/30 08:30 ~ 09:30'],
@@ -903,13 +903,13 @@ const META = [
 ];
 const DKEY = 'sti-rec-data-v1', SKEY = 'sti-rec-sheet-v1', NKEY = 'sti-rec-sender-v1', LKEY = 'sti-rec-sent-v1';
 
-const rec = { combo: 'ts100', kind: 'self', sheets: {}, photos: [], urls: {}, idb: null, storageOk: true, idbOk: true,
+const rec = { combo: 'ts300', kind: 'self', sheets: {}, photos: [], urls: {}, idb: null, storageOk: true, idbOk: true,
   busy: 0, zip: null, lb: null, offline: 'wait' };
 try { const s = JSON.parse(localStorage.getItem(SKEY) || 'null'); if (s) { rec.combo = s.combo || rec.combo; rec.kind = s.kind || rec.kind; } } catch (e) {}
 try { rec.sheets = JSON.parse(localStorage.getItem(DKEY) || '{}') || {}; } catch (e) { rec.storageOk = false; }
 
 const sheetId = () => `${rec.combo}-${rec.kind}`;
-const SHEET_IDS = ['ts100-self', 'ts300-self', 'ts100-wit', 'ts300-wit'];
+const SHEET_IDS = ['ts300-self', 'ts100-self', 'ts300-wit', 'ts100-wit'];
 const sheetLabel = id => { const [c, k] = id.split('-'); return `${(COMBOS.find(x => x[0] === c) || [, c])[1]} · ${(KINDS.find(x => x[0] === k) || [, k])[1]}`; };
 const $ = id => document.getElementById(id);
 const isObj = v => v && typeof v === 'object' && !Array.isArray(v);
