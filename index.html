@@ -158,7 +158,7 @@ td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-spa
 .dist-nav button { flex: none; min-width: 44px; min-height: 36px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; font: 500 .85rem var(--f-mono); cursor: pointer; }
 .dist-nav button[data-full="true"] { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
 .dist-nav button[data-some="true"]:not([data-full="true"]) { border-color: var(--accent); }
-.pt-card { scroll-margin-top: 150px; }
+.pt-card { scroll-margin-top: 12px; }
 .seg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .seg .lbl { font-size: .8rem; color: var(--muted); font-weight: 700; min-width: 5.5em; }
 .seg button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 .92rem var(--f-body); padding: 8px 14px; min-height: 40px; border-radius: 8px; cursor: pointer; }
@@ -207,6 +207,7 @@ label.btn.on { border-color: var(--accent); }
 .lightbox img { max-width: 100%; max-height: 100%; margin: auto; object-fit: contain; min-height: 0; }
 .lb-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #eef0ee; font-size: .9rem; }
 .lb-bar .cap { margin-right: auto; }
+.lb-bar .btn.primary { background: var(--accent); border-color: var(--accent); color: #2a1c00; }
 .lb-val { display: inline-flex; align-items: center; gap: 6px; }
 .lb-val .in { width: 6.5em; background: #fff; color: #1d2327; border-color: #fff; }
 .slot { display: grid; grid-template-columns: 38px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 6px; align-items: center; text-align: left;
@@ -230,8 +231,11 @@ label.btn.on { border-color: var(--accent); }
   .rec-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; }
   nav.tabs button { padding: 8px 10px; min-height: 40px; font-size: .88rem; }
   nav.tabs button small { display: none; }
-  .seg .lbl { min-width: 0; width: 100%; }
-  .seg button { flex: 1; }
+  .rec-bar { grid-template-columns: 1fr 1fr; gap: 6px; padding-block: 6px; }
+  .rec-bar .dist-nav { grid-column: 1 / -1; }
+  .seg { flex-wrap: nowrap; gap: 4px; }
+  .seg .lbl { display: none; }
+  .seg button { flex: 1; padding: 6px 4px; font-size: .85rem; white-space: nowrap; }
   .pos-grid { gap: 6px; }
   .pt-card { padding: 10px; gap: 8px; }
   .slot { grid-template-columns: 1fr; grid-template-rows: auto auto auto; justify-items: center; text-align: center; row-gap: 2px; padding: 6px 4px; }
@@ -472,8 +476,8 @@ label.btn.on { border-color: var(--accent); }
       <li><p><b>마이크 삼각대를 분필 표시 위에 세웁니다.</b> 마이크 높이는 약 1.2~1.6m(서 있는 사람 귀 높이)이고, 모든 지점에서 같은 높이로 맞춥니다.</p></li>
       <li><p><b>사람이 마이크에서 1~2m 물러납니다.</b> 몸이 소리를 막거나 반사하지 않게 측정 담당은 옆으로 비켜 서고, 모두 말을 멈춥니다.</p></li>
       <li><p><b>측정 시작 버튼을 누르고 결과가 나올 때까지 기다립니다</b> (약 15~25초). 도중에 차량이 지나가거나 누가 말하면 그 측정은 버리고 다시 합니다.</p></li>
-      <li><p><b>STI 값을 읽어 기록 담당에게 불러 줍니다.</b> 예: "10미터 중앙, 1차 0.62". 소수 둘째 자리까지 적습니다.</p></li>
-      <li><p><b>같은 자리에서 한 번 더 측정합니다 (2차).</b> 두 값 차이가 0.03을 넘으면 3차를 측정하고 비고에 적습니다.</p></li>
+      <li><p><b>결과 화면을 찍습니다.</b> 측정 기록 탭에서 그 칸(예: 10m 중앙 <b>1차</b>)을 누르면 카메라가 열립니다. STI 숫자가 사진의 절반 이상을 차지하게 가까이, 조명이 비치지 않게 찍습니다. 값을 불러 주면 기록 담당이 2회 차이를 바로 확인할 수 있습니다(예: "10미터 중앙, 1차 0.62").</p></li>
+      <li><p><b>같은 자리에서 한 번 더 측정합니다 (2차).</b> 두 값 차이가 0.03을 넘으면 3차를 측정해 3차 칸에 찍습니다. 상황에 따라 1회만 했다면 1차 칸만 찍어도 됩니다.</p></li>
       <li><p><b>XL2에 결과를 저장합니다</b> (가능한 경우). 파일 이름 예: <span class="num">TS-100_010m_C_1</span>. 기록지와 XL2 파일 두 곳에 남겨 두면 나중에 정리할 때 대조할 수 있습니다.</p></li>
     </ol>
     <p class="check-line"><b>정상 범위 감각:</b> STI 값은 0~1 사이입니다. 스피커 바로 앞(1, 101, 201m)은 높고, 스피커에서 40m 떨어진 곳(40, 140, 240m)은 낮아질 수 있습니다. 갑자기 튀는 값이 나오면 주변 소음이나 마이크 위치부터 확인합니다.</p>
@@ -484,7 +488,7 @@ label.btn.on { border-color: var(--accent); }
     <tbody>
       <tr><td>거리</td><td class="n">1 → 10 → 40 → 101 → 110 → 140 → 201 → 210 → 240m</td></tr>
       <tr><td>한 거리 안에서</td><td>우측 → 중앙 → 좌측 (기록지 열 순서와 같음)</td></tr>
-      <tr><td>음압</td><td>STIPA 측정과 같은 위치에서 dB(A)를 재어 음압 칸에 적습니다.</td></tr>
+      <tr><td>음압</td><td>STIPA 측정과 같은 위치에서 dB(A)를 재고, 거리 카드의 [음압] 칸을 눌러 화면을 찍습니다.</td></tr>
     </tbody>
   </table></div>
 </template>
@@ -513,7 +517,7 @@ const PHASES = [
     meta: ['읽는 데 5분', '참석: 블루넷테크놀러지, 제이디솔루션, 도로공사 전북본부 교통부'],
     templates: ['tpl-overview'] },
   { id: 'record', tab: '측정 기록', when: '입력·사진', title: '측정 기록',
-    meta: ['조합 2개 × 자체·입회 = 기록지 4장', '거리 9곳 × 좌·중·우', '입력하면 바로 저장'],
+    meta: ['조합 2개 × 자체·입회 = 기록지 4장', '거리 9곳 × 좌·중·우', '칸을 누르면 카메라로 기록'],
     templates: ['tpl-record'] },
   { id: 'layout', tab: '배치도', when: '장비 위치', title: '현장 배치도',
     meta: ['앰프 5대(50m 간격)', '스피커 3대(0·100·200m)', '측정 지점 27곳'],
@@ -650,14 +654,14 @@ const PHASES = [
         ok: '소리 정상, 볼륨 어제와 동일, XL2 교정 완료.' },
       { t: '배경소음을 측정합니다', time: '08:20', who: 'A', how: [
           'C가 음원을 정지합니다.',
-          'XL2 음압 모드로 50m 중앙(스피커 사이)에서 30초~1분 측정해 dB(A) 값을 2장의 기록지 위쪽 "배경소음" 칸에 적습니다.',
+          'XL2 음압 모드로 50m 중앙(스피커 사이)에서 30초~1분 측정해 dB(A) 값을 측정 기록 탭 위쪽 「배경소음」 칸에 입력합니다(조합 2개 모두).',
           '소음 환경이 달라지면(환기팬 가동 등) 다시 잽니다.'],
-        ok: '배경소음 값이 기록지에 적혀 있다.' },
+        ok: '배경소음 값이 측정 기록 탭에 입력되어 있다.' },
       { t: '조합 1 측정: TS + 100W', time: '08:30', who: 'A·B', how: [
           '측정 기록 탭에서 TS + 100W · 자체를 고르고 측정 일시, 측정자, 음원 입력 방식, STIPA 판, 배경소음을 입력합니다. 지점마다 측정이 끝나면 그 칸을 눌러 XL2 화면을 찍습니다.',
           'C가 STIPA 음원을 재생합니다(측정이 끝날 때까지 계속 틀어 둡니다).',
           '측정법 탭의 순서대로 27개 지점을 2회씩 측정합니다.'],
-        ok: '기록지 1번의 27개 지점 1차·2차 칸이 모두 채워졌다.' },
+        ok: 'TS + 100W · 자체의 거리 카드 9개가 모두 3/3(초록 테두리)이다.' },
       { t: '조합 교체: TS + 300W로', time: '09:30', who: 'C', how: [
           'C가 음원을 정지하고 앰프 볼륨을 최소로 내립니다(앰프 전원은 끄는 것이 가장 안전합니다).',
           'SP1~SP3의 TS 드라이버를 100W에서 300W로 바꿉니다.',
@@ -667,7 +671,7 @@ const PHASES = [
         ok: '세 스피커 모두 300W로 교체, 소리 정상.',
         warn: '볼륨을 올린 채 드라이버를 빼거나 꽂지 마세요.' },
       { t: '조합 2 측정: TS + 300W', time: '09:50', who: 'A·B', how: ['측정 기록 탭에서 조합을 TS + 300W로 바꾸고 조합 1과 똑같이 측정합니다.'],
-        ok: '기록지 2번 완료.' },
+        ok: 'TS + 300W · 자체도 거리 카드 9개 모두 3/3이다.' },
       { t: '오전 기록을 확인하고 사진으로 남깁니다', time: '10:50', who: 'B', how: [
           '측정 기록 탭에서 조합 2개 모두 거리 카드가 3/3(초록 테두리)인지 봅니다. 빈 곳이 있으면 점심 전에 다시 측정합니다.',
           '1·2차 차이가 0.03을 넘은 곳은 3차 칸도 찍었는지 봅니다.',
@@ -676,7 +680,7 @@ const PHASES = [
     ]},
   { id: 'pm', tab: '시험 오후', when: '10/30 (금) 오후', title: '본부 입회시험',
     meta: ['입회 범위에 따라 1~2시간', '입회: 도로공사 전북본부 교통부'],
-    intro: '오전과 같은 절차를 입회자 앞에서 반복합니다. 새 기록지를 쓰고 위쪽 구분 칸에 "입회"를 체크합니다.',
+    intro: '오전과 같은 절차를 입회자 앞에서 반복합니다. 측정 기록 탭에서 구분을 「입회」로 바꾼 뒤 찍습니다(오전 기록과 따로 저장됩니다).',
     steps: [
       { t: '입회자를 맞이하고 시험을 설명합니다', time: '14:00', who: '책임자', how: [
           '시험 목적(스피커 100m 간격으로도 명료도가 나오는지)을 먼저 설명합니다.',
@@ -689,7 +693,7 @@ const PHASES = [
           '조합 순서는 지금 설치된 TS+300W부터 시작하면 드라이버 교체를 한 번 줄일 수 있습니다.',
           '측정값을 입회자에게 그때그때 보여 주면 신뢰를 얻기 좋습니다.'],
         ok: '입회 범위의 측정이 끝났다.' },
-      { t: '기록지에 서명을 받습니다', who: '책임자', how: ['입회 기록지 아래 여백에 입회자 서명과 날짜를 받습니다.', '서명한 기록지를 사진으로 찍어 둡니다.'],
+      { t: '기록지에 서명을 받습니다', who: '책임자', how: ['종이 기록지(또는 현장에서 출력한 결과표)에 입회자 서명과 날짜를 받습니다.', '서명한 종이를 측정 기록 탭(구분: 입회)의 기타 사진으로 찍어 둡니다.'],
         ok: '입회 기록지에 서명이 있다.' },
     ]},
   { id: 'wrap', tab: '철수', when: '10/30 종료 후', title: '철수와 데이터 정리',
@@ -982,7 +986,11 @@ function buildRecord() {
 
   DISTS.forEach(([d]) => {
     const b = el('button', { type: 'button', id: 'dn-' + d, text: String(d) });
-    b.addEventListener('click', () => $('pt-' + d).scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    b.addEventListener('click', () => {
+      const bar = document.querySelector('.rec-bar');
+      const off = getComputedStyle(bar).position === 'sticky' ? bar.getBoundingClientRect().height + 8 : 8;
+      window.scrollTo({ top: $('pt-' + d).getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
+    });
     $('dist-nav').append(b);
   });
 
@@ -1354,7 +1362,7 @@ async function makeZip() {
     const safe = (sender || '이름없음').replace(/[\\/:*?"<>|\s]+/g, '_');
     rec.zip = new File([blob], `STI기록_${safe}_${stamp}.zip`, { type: 'application/zip' });
     const mb = (blob.size / 1048576).toFixed(1);
-    sendStatus(`파일이 준비됐습니다: ${rec.zip.name} (${mb} MB). 위의 [카톡·메일로 보내기] 또는 [파일로 저장]을 누르세요.`, 'ok');
+    sendStatus(`파일이 준비됐습니다: ${rec.zip.name} (${mb} MB). ${canShareFile(rec.zip) ? '위의 [카톡·메일로 보내기] 또는 [파일로 저장]을 누르세요.' : '위의 [파일로 저장]을 누른 뒤 카톡이나 메일에 첨부해 보내세요.'}`, 'ok');
   } catch (e) {
     sendStatus('파일을 만들지 못했습니다. 다시 눌러 주세요.', 'warn');
   } finally {
