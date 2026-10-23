@@ -202,6 +202,7 @@ label.btn.on { border-color: var(--accent); }
 .photo-head h3 { margin-right: auto; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
 .empty { color: var(--muted); font-size: .9rem; }
+.gallery .empty { grid-column: 1 / -1; }
 .lightbox { position: fixed; inset: 0; z-index: 20; background: rgba(10, 12, 13, .92); display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px;
   padding: calc(env(safe-area-inset-top, 0px) + 12px) max(16px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 12px) max(16px, env(safe-area-inset-left, 0px)); }
 .lightbox img { max-width: 100%; max-height: 100%; margin: auto; object-fit: contain; min-height: 0; }
@@ -219,6 +220,11 @@ label.btn.on { border-color: var(--accent); }
 .slot[data-has="true"] .slot-s { color: var(--ok); font-weight: 500; }
 .slot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .pt-extra .slot { min-width: 110px; }
+.add-dist { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; background: var(--surface); border: 1px dashed var(--line); border-radius: 10px; padding: 12px 14px; }
+.add-dist .status { grid-column: 1 / -1; }
+.add-dist .btn { min-height: 44px; }
+.tag-add { font-size: .72rem; color: var(--accent-ink); background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; }
+.del-d { padding: 4px 10px; font-size: .8rem; }
 .send { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
 .send .field { max-width: 22rem; }
 .send-sum { font-size: .9rem; color: var(--muted); }
@@ -293,6 +299,11 @@ label.btn.on { border-color: var(--accent); }
     <div class="fields" id="rec-fields"></div>
     <p class="lead">측정이 끝날 때마다 해당 칸(예: 10m 중앙 <b>1차</b>)을 누르면 카메라가 열립니다. XL2 화면이 잘 보이게 찍으면 그 칸에 저장됩니다. 지점마다 1회만 해도, 2·3회까지 해도 됩니다. 찍은 칸을 누르면 크게 보기·다시 찍기·삭제를 할 수 있고, 원하면 값을 직접 넣을 수도 있습니다.</p>
     <div class="pts" id="rec-pts"></div>
+    <div class="add-dist">
+      <label class="field"><span>측정 거리 추가 (m, 시작점 SP1 기준)</span><input class="in num" id="add-d" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 15"></label>
+      <button class="btn primary" id="add-d-btn" type="button">+ 거리 추가</button>
+      <p class="status" id="add-d-msg" hidden></p>
+    </div>
     <div class="fields"><label class="field" style="grid-column: 1 / -1"><span>특이사항 (볼륨 설정, 1m 음압, 환경 변화 등)</span><textarea class="in" id="m-notes" rows="3"></textarea></label></div>
     <div class="photo-sec">
       <div class="photo-head">
@@ -318,7 +329,7 @@ label.btn.on { border-color: var(--accent); }
       <p class="status" id="send-status" hidden></p>
       <div class="send-row clear-row">
         <button class="btn danger" id="rec-clear" type="button">이 휴대폰의 기록 모두 지우기</button>
-        <span id="rec-clear-confirm" hidden>보내지 않은 기록은 되살릴 수 없습니다. <button class="btn danger" id="rec-clear-yes" type="button">지우기</button> <button class="btn" id="rec-clear-no" type="button">취소</button></span>
+        <span id="rec-clear-confirm" hidden>사진·입력값·추가한 거리가 모두 지워지고 되살릴 수 없습니다. <button class="btn danger" id="rec-clear-yes" type="button">지우기</button> <button class="btn" id="rec-clear-no" type="button">취소</button></span>
       </div>
     </section>
   </div>
@@ -486,7 +497,7 @@ label.btn.on { border-color: var(--accent); }
   <div class="tbl-wrap"><table>
     <thead><tr><th>측정 순서</th><th>방법</th></tr></thead>
     <tbody>
-      <tr><td>거리</td><td class="n">1 → 10 → 40 → 101 → 110 → 140 → 201 → 210 → 240m</td></tr>
+      <tr><td>거리</td><td class="n">1 → 10 → 40 → 101 → 110 → 140 → 201 → 210 → 240m (현장에서 거리를 추가했으면 거리 순서대로 끼워서)</td></tr>
       <tr><td>한 거리 안에서</td><td>우측 → 중앙 → 좌측 (기록지 열 순서와 같음)</td></tr>
       <tr><td>음압</td><td>STIPA 측정과 같은 위치에서 dB(A)를 재고, 거리 카드의 [음압] 칸을 눌러 화면을 찍습니다.</td></tr>
     </tbody>
@@ -517,7 +528,7 @@ const PHASES = [
     meta: ['읽는 데 5분', '참석: 블루넷테크놀러지, 제이디솔루션, 도로공사 전북본부 교통부'],
     templates: ['tpl-overview'] },
   { id: 'record', tab: '측정 기록', when: '입력·사진', title: '측정 기록',
-    meta: ['조합 2개 × 자체·입회 = 기록지 4장', '거리 9곳 × 좌·중·우', '칸을 누르면 카메라로 기록'],
+    meta: ['조합 2개 × 자체·입회 = 기록지 4장', '기본 거리 9곳 × 좌·중·우 (거리 추가 가능)', '칸을 누르면 카메라로 기록'],
     templates: ['tpl-record'] },
   { id: 'layout', tab: '배치도', when: '장비 위치', title: '현장 배치도',
     meta: ['앰프 5대(50m 간격)', '스피커 3대(0·100·200m)', '측정 지점 27곳'],
@@ -836,7 +847,23 @@ document.getElementById('reset-yes').addEventListener('click', () => {
 });
 
 // ── 측정 기록: 칸마다 XL2 화면 사진(IndexedDB), 머리 정보·선택 입력값은 localStorage. 모두 이 휴대폰에만. [기록 보내기]로 엑셀 기록지+사진 ZIP ──
-const DISTS = [[1, 'SP1 +1m'], [10, 'SP1 +10m'], [40, 'SP1 +40m'], [101, 'SP2 +1m'], [110, 'SP2 +10m'], [140, 'SP2 +40m'], [201, 'SP3 +1m'], [210, 'SP3 +10m'], [240, 'SP3 +40m']];
+// 기본 측정 거리(계획). 현장에서 [+ 거리 추가]로 늘릴 수 있고, 추가한 거리는 이 폰의 기록지 4장 모두에 생김
+const DEF_DISTS = [1, 10, 40, 101, 110, 140, 201, 210, 240];
+const XKEY = 'sti-rec-dists-v1';
+let extraDists = [];
+try { extraDists = (JSON.parse(localStorage.getItem(XKEY) || '[]') || []).filter(n => Number.isInteger(n) && n > 0); } catch (e) {}
+const saveDists = () => { try { localStorage.setItem(XKEY, JSON.stringify(extraDists)); } catch (e) {} };
+// 기준 위치: 바로 뒤쪽 스피커(SP1 0m, SP2 100m, SP3 200m)에서 떨어진 거리
+const refOf = d => { const i = d >= 200 ? 3 : d >= 100 ? 2 : 1; return `SP${i} +${d - (i - 1) * 100}m`; };
+// 기본 + 추가 + (혹시 남아 있는) 사진·입력값의 거리
+function allDists() {
+  const set = new Set([...DEF_DISTS, ...extraDists]);
+  rec.photos.forEach(p => { if (p.slot && p.d) set.add(Number(p.d)); });
+  Object.values(rec.sheets).forEach(sh => Object.keys((sh && sh.pts) || {}).forEach(d => set.add(Number(d))));
+  return [...set].filter(n => Number.isFinite(n) && n > 0).sort((a, b) => a - b);
+}
+const distRows = () => allDists().map(d => [d, refOf(d)]);
+const hasData = d => rec.photos.some(p => p.slot && p.d === String(d)) || Object.values(rec.sheets).some(sh => sh && sh.pts && sh.pts[d] && Object.values(sh.pts[d]).some(v => v !== '' && v != null));
 const POS = [['R', '우측'], ['C', '중앙'], ['L', '좌측']];
 const COMBOS = [['ts100', 'TS + 100W', '100W'], ['ts300', 'TS + 300W', '300W']];
 const KINDS = [['self', '자체'], ['wit', '입회']];
@@ -968,31 +995,9 @@ function buildRecord() {
   });
   $('m-notes').addEventListener('change', e => write({ meta: { notes: e.target.value } }));
 
-  DISTS.forEach(([d, ref]) => {
-    const grid = el('div', { class: 'pos-grid' });
-    POS.forEach(([p, pl]) => {
-      const col = el('div', { class: 'pos' }, el('span', { class: 'pos-h', text: pl }));
-      [1, 2, 3].forEach(n => col.append(slotButton(d, p + n, `${n}차`)));
-      col.append(el('div', { class: 'avg', id: `a-${d}-${p}`, hidden: '' }), el('div', { class: 'flag', id: `f-${d}-${p}` }));
-      grid.append(col);
-    });
-    const note = el('input', { class: 'in', id: `n-${d}`, type: 'text', autocomplete: 'off', placeholder: '비고 (선택)' });
-    note.addEventListener('change', () => write({ pts: { [d]: { note: note.value.trim() } } }));
-    $('rec-pts').append(el('article', { class: 'pt-card', id: 'pt-' + d },
-      el('div', { class: 'pt-head' }, el('span', { class: 'd', text: d + 'm' }), el('span', { class: 'ref', text: ref }), el('span', { class: 'cnt', id: 'c-' + d })),
-      grid,
-      el('div', { class: 'pt-extra' }, slotButton(d, 'spl', '음압'), el('label', { class: 'field note-f' }, el('span', { text: '비고' }), note))));
-  });
-
-  DISTS.forEach(([d]) => {
-    const b = el('button', { type: 'button', id: 'dn-' + d, text: String(d) });
-    b.addEventListener('click', () => {
-      const bar = document.querySelector('.rec-bar');
-      const off = getComputedStyle(bar).position === 'sticky' ? bar.getBoundingClientRect().height + 8 : 8;
-      window.scrollTo({ top: $('pt-' + d).getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
-    });
-    $('dist-nav').append(b);
-  });
+  buildDists();
+  $('add-d-btn').addEventListener('click', addDist);
+  $('add-d').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addDist(); } });
 
   const shotIn = el('input', { class: 'vh', type: 'file', accept: 'image/*', capture: 'environment', id: 'shot-in', tabindex: '-1', 'aria-hidden': 'true' });
   shotIn.addEventListener('change', () => {
@@ -1026,6 +1031,59 @@ function buildRecord() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('lb').hidden) closeLb(); });
 }
 
+function buildCard(d, ref) {
+  const grid = el('div', { class: 'pos-grid' });
+  POS.forEach(([p, pl]) => {
+    const col = el('div', { class: 'pos' }, el('span', { class: 'pos-h', text: pl }));
+    [1, 2, 3].forEach(n => col.append(slotButton(d, p + n, `${n}차`)));
+    col.append(el('div', { class: 'avg', id: `a-${d}-${p}`, hidden: '' }), el('div', { class: 'flag', id: `f-${d}-${p}` }));
+    grid.append(col);
+  });
+  const note = el('input', { class: 'in', id: `n-${d}`, type: 'text', autocomplete: 'off', placeholder: '비고 (선택)' });
+  note.addEventListener('change', () => write({ pts: { [d]: { note: note.value.trim() } } }));
+  const head = el('div', { class: 'pt-head' }, el('span', { class: 'd', text: d + 'm' }), el('span', { class: 'ref', text: ref }),
+    DEF_DISTS.includes(d) ? null : el('span', { class: 'tag-add', text: '추가' }), el('span', { class: 'cnt', id: 'c-' + d }));
+  if (!DEF_DISTS.includes(d)) {
+    const del = el('button', { class: 'btn danger del-d', type: 'button', id: 'del-' + d, text: '거리 삭제' });
+    del.addEventListener('click', () => removeDist(d));
+    head.append(del);
+  }
+  return el('article', { class: 'pt-card', id: 'pt-' + d }, head, grid,
+    el('div', { class: 'pt-extra' }, slotButton(d, 'spl', '음압'), el('label', { class: 'field note-f' }, el('span', { text: '비고' }), note)));
+}
+function buildDists() {
+  const rows = distRows();
+  $('rec-pts').replaceChildren(...rows.map(([d, ref]) => buildCard(d, ref)));
+  $('dist-nav').replaceChildren(...rows.map(([d]) => {
+    const b = el('button', { type: 'button', id: 'dn-' + d, text: String(d) });
+    b.addEventListener('click', () => jumpTo(d));
+    return b;
+  }));
+}
+function jumpTo(d) {
+  const bar = document.querySelector('.rec-bar');
+  const off = getComputedStyle(bar).position === 'sticky' ? bar.getBoundingClientRect().height + 8 : 8;
+  window.scrollTo({ top: $('pt-' + d).getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
+}
+function distMsg(msg, cls) { const m = $('add-d-msg'); m.hidden = !msg; m.className = 'status' + (cls ? ' ' + cls : ''); m.textContent = msg || ''; }
+function addDist() {
+  const raw = $('add-d').value.trim();
+  const d = Number(raw);
+  if (!/^\d+$/.test(raw) || d < 1 || d > 999) { distMsg('거리는 1~999 사이의 정수(m)로 넣어 주세요. 예: 15', 'warn'); return; }
+  if (allDists().includes(d)) { distMsg(`${d}m는 이미 있습니다.`, 'warn'); jumpTo(d); return; }
+  extraDists.push(d); saveDists();
+  $('add-d').value = '';
+  buildDists(); dropZip(); renderRec();
+  distMsg(`${d}m (${refOf(d)})를 추가했습니다. 기록지 4장 모두에 생겼습니다.`, 'ok');
+  jumpTo(d);
+}
+function removeDist(d) {
+  if (hasData(d)) { distMsg(`${d}m에 사진이나 값이 있어 삭제할 수 없습니다. 기록지 4장 모두에서 그 거리의 사진을 먼저 지우세요.`, 'warn'); return; }
+  extraDists = extraDists.filter(x => x !== d); saveDists();
+  buildDists(); dropZip(); renderRec();
+  distMsg(`${d}m를 삭제했습니다.`, 'ok');
+}
+
 function pickSheet() {
   try { localStorage.setItem(SKEY, JSON.stringify({ combo: rec.combo, kind: rec.kind })); } catch (e) {}
   renderRec(); renderPhotos();
@@ -1048,15 +1106,18 @@ function renderRec() {
 
   const paint = (d, slot, val, digits) => {
     const b = $(`sl-${d}-${slot}`), ph = findShot(sid, d, slot);
+    if (!b) return !!ph || isNum(val);
     const img = b.querySelector('.slot-img');
     img.style.backgroundImage = ph ? `url("${photoUrl(ph)}")` : '';
     b.dataset.has = String(!!ph || isNum(val));
     b.querySelector('.slot-s').textContent = isNum(val) ? val.toFixed(digits) : ph ? '✓' : '찍기';
     return !!ph || isNum(val);
   };
-  DISTS.forEach(([d]) => {
+  distRows().forEach(([d]) => {
     const row = pts[d] || {};
     let full = 0;
+    const del = $('del-' + d);
+    if (del) del.hidden = hasData(d);
     POS.forEach(([p]) => {
       const got = [1, 2, 3].map(n => paint(d, p + n, row[p + n], 2));
       const st = posStats(row, p);
@@ -1208,6 +1269,7 @@ async function clearAll() {
   try { if (rec.idb) await idbDo('readwrite', st => st.clear()); } catch (e) {}
   Object.values(rec.urls).forEach(u => URL.revokeObjectURL(u));
   rec.photos = []; rec.urls = {};
+  extraDists = []; saveDists(); buildDists();
   try { localStorage.removeItem(LKEY); } catch (e) {}
   $('rec-clear-confirm').hidden = true;
   dropZip(); renderRec(); renderPhotos();
@@ -1293,10 +1355,11 @@ function buildSheet(wb, c, k, idx, sender, names) {
     cell.numFmt = undefined;
     return cell;
   };
-  DISTS.forEach(([d, ref], i) => {
+  const rows = distRows();
+  rows.forEach(([d, ref], i) => {
     const r = 10 + i, row = pts[d] || {};
     put(`A${r}`, d, { font: { bold: true } });
-    put(`B${r}`, ref);
+    put(`B${r}`, DEF_DISTS.includes(d) ? ref : ref + ' (추가)');
     const third = [];
     POS.forEach(([p, pl], j) => {
       const st = posStats(row, p);
@@ -1313,10 +1376,11 @@ function buildSheet(wb, c, k, idx, sender, names) {
     ws.getRow(r).height = 24;
   });
 
-  merge('A20:M20', '※ 거리는 시작점(SP1) 기준입니다. 지점마다 2회 측정하고, 두 값의 차이가 0.03을 넘으면 한 번 더 측정해 비고에 적습니다. 지점마다 1~3회 측정할 수 있으며 빈칸은 측정하지 않은 회차입니다. 「사진」을 누르면 photos 폴더의 XL2 화면 사진이 열립니다(ZIP을 푼 뒤). 값이 입력된 칸은 숫자로 표시하고, 평균은 입력된 값의 평균입니다. 판정 기준: 평균 STI 0.46 이상 합격(미만은 빨간 글씨).', { font: { size: 9 }, align: { horizontal: 'left' }, border: false });
-  ws.getRow(20).height = 30;
-  merge('A21:B23', '특이사항', { fill: head, font: { bold: true } });
-  merge('C21:M23', m.notes, { align: { horizontal: 'left', vertical: 'top' } });
+  const F = 10 + rows.length + 1;
+  merge(`A${F}:M${F}`, '※ 거리는 시작점(SP1) 기준이며, (추가)는 현장에서 추가한 거리입니다. 지점마다 2회 측정하고, 두 값의 차이가 0.03을 넘으면 한 번 더 측정해 비고에 적습니다. 지점마다 1~3회 측정할 수 있으며 빈칸은 측정하지 않은 회차입니다. 「사진」을 누르면 photos 폴더의 XL2 화면 사진이 열립니다(ZIP을 푼 뒤). 값이 입력된 칸은 숫자로 표시하고, 평균은 입력된 값의 평균입니다. 판정 기준: 평균 STI 0.46 이상 합격(미만은 빨간 글씨).', { font: { size: 9 }, align: { horizontal: 'left' }, border: false });
+  ws.getRow(F).height = 30;
+  merge(`A${F + 1}:B${F + 3}`, '특이사항', { fill: head, font: { bold: true } });
+  merge(`C${F + 1}:M${F + 3}`, m.notes, { align: { horizontal: 'left', vertical: 'top' } });
 }
 
 function buildPhotoSheet(wb, names) {
@@ -1354,7 +1418,7 @@ async function makeZip() {
     const stamp = `${p2(now.getMonth() + 1)}${p2(now.getDate())}-${p2(now.getHours())}${p2(now.getMinutes())}`;
     zip.file(`STI_measurement_${stamp}.xlsx`, await wb.xlsx.writeBuffer());
     zip.file('records.json', JSON.stringify({
-      sender, exportedAt: now.toISOString(), sheets: rec.sheets,
+      sender, exportedAt: now.toISOString(), dists: allDists(), defaultDists: DEF_DISTS, sheets: rec.sheets,
       photos: rec.photos.map(ph => ({ file: 'photos/' + names.get(ph), sheet: ph.sheet, d: ph.d, slot: ph.slot || '', at: ph.at })),
     }, null, 2));
     rec.photos.forEach(ph => zip.file('photos/' + names.get(ph), ph.buf));
@@ -1394,6 +1458,7 @@ async function initRecord() {
     rec.idb = await idbOpen();
     rec.photos = ((await idbDo('readonly', st => st.getAll())) || []).sort((a, b) => (a.at < b.at ? -1 : 1));
   } catch (e) { rec.idb = null; rec.idbOk = false; }
+  buildDists();   // 사진에만 남아 있는 거리가 있으면 카드를 만듦
   renderRec(); renderPhotos();
   // 오프라인에서도 열리도록 페이지와 도구를 폰에 보관
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
