@@ -1076,8 +1076,12 @@ function renderSend() {
   $('send-sum').textContent = `이 휴대폰에 저장된 기록: 측정 사진 ${countValues()}장 · 기타 사진 ${rec.photos.length - countValues()}장${last}`;
   const ready = !!rec.zip;
   $('zip-make').hidden = ready;
-  $('zip-share').hidden = !(ready && navigator.canShare && navigator.canShare({ files: [rec.zip] }));
   $('zip-save').hidden = !ready;
+  $('zip-share').hidden = !(ready && canShareFile(rec.zip));
+}
+// 브라우저마다 공유 지원이 달라 canShare가 없거나 예외를 던질 수 있음
+function canShareFile(f) {
+  try { return !!(navigator.share && (!navigator.canShare || navigator.canShare({ files: [f] }))); } catch (e) { return false; }
 }
 function sendStatus(msg, cls) {
   const s = $('send-status');
@@ -1335,7 +1339,7 @@ async function makeZip() {
     const safe = (sender || '이름없음').replace(/[\\/:*?"<>|\s]+/g, '_');
     rec.zip = new File([blob], `STI기록_${safe}_${stamp}.zip`, { type: 'application/zip' });
     const mb = (blob.size / 1048576).toFixed(1);
-    sendStatus(`파일이 준비됐습니다: ${rec.zip.name} (${mb} MB). 아래 버튼으로 보내세요.`, 'ok');
+    sendStatus(`파일이 준비됐습니다: ${rec.zip.name} (${mb} MB). 위의 [카톡·메일로 보내기] 또는 [파일로 저장]을 누르세요.`, 'ok');
   } catch (e) {
     sendStatus('파일을 만들지 못했습니다. 다시 눌러 주세요.', 'warn');
   } finally {
@@ -1349,6 +1353,7 @@ async function shareZip() {
     markSent(); sendStatus('보냈습니다. 받는 사람이 ZIP 파일을 받았는지 확인하세요.', 'ok');
   } catch (e) {
     if (e && e.name === 'AbortError') return;
+    $('zip-share').hidden = true;
     sendStatus('보내기 창을 열지 못했습니다. [파일로 저장]을 누른 뒤 카톡이나 메일에 직접 첨부해 주세요.', 'warn');
   }
 }
