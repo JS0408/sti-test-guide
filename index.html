@@ -150,6 +150,12 @@ th { background: var(--raised); color: var(--muted); font-weight: 500; font-size
 tbody tr:hover td { background: rgba(255, 255, 255, .02); }
 tr:last-child td { border-bottom: 0; }
 td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--accent-ink); }
+td { word-break: keep-all; overflow-wrap: break-word; }
+/* 전체 흐름표: 긴 문장인 「무엇을」에 폭을 몰아 주고 언제·시간 열은 줄바꿈 허용 */
+table.flow { table-layout: fixed; }
+table.flow .c-when { width: 7.5em; }
+table.flow .c-time { width: 9.5em; }
+table.flow th, table.flow td.n { white-space: normal; }
 
 /* 역할 */
 .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
@@ -288,15 +294,18 @@ label.btn.on { border-color: var(--accent); }
   .lb-bar { gap: 6px; }
   .lb-bar .cap { width: 100%; }
   .lb-bar .btn { min-height: 44px; }
+  table.flow .c-when { width: 5.2em; }
+  table.flow .c-time { width: 6.4em; }
+  table.flow th, table.flow td { padding: 8px 9px; }
 }
 @media (max-width: 520px) {
   header.top { padding-top: 26px; }
   h1 { font-size: 1.55rem; }
   .step-row { padding: 12px; gap: 10px; }
   .pt-card { padding: 12px; }
-  .span-strip { padding-top: 8px; }
-  .span-strip text { font-size: 22px; }
-  .span-strip text.k { font-size: 24px; }
+  .span-strip { padding-block: 14px 6px; }
+  .span-strip text { font-size: 27px; }
+  .span-strip text.k { font-size: 30px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before { transition: none !important; } }
 </style>
@@ -417,8 +426,9 @@ label.btn.on { border-color: var(--accent); }
   </div>
 
   <h3>전체 흐름</h3>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th>언제</th><th>무엇을</th><th>걸리는 시간 (예상)</th></tr></thead>
+  <div class="tbl-wrap"><table class="flow">
+    <colgroup><col class="c-when"><col><col class="c-time"></colgroup>
+    <thead><tr><th>언제</th><th>무엇을</th><th>소요 시간 (예상)</th></tr></thead>
     <tbody>
       <tr><td class="n">D-3 ~ D-1</td><td>사무실에서 장비 연결 시험, 음원·XL2 준비, 기록지 인쇄, 짐 싣기</td><td class="n">반나절</td></tr>
       <tr><td class="n">10/29</td><td>현장 표시(분필), 장비 설치·결선, 소리 확인, 레벨 맞추기, 리허설 측정</td><td class="n">4~5시간</td></tr>
@@ -552,24 +562,6 @@ label.btn.on { border-color: var(--accent); }
       <tr><td>거리</td><td class="n">1 → 10 → 40 → 101 → 110 → 140 → 201 → 210 → 240m (현장에서 거리를 추가했으면 거리 순서대로 끼워서)</td></tr>
       <tr><td>한 거리 안에서</td><td>우측 → 중앙 → 좌측 (기록지 열 순서와 같음)</td></tr>
       <tr><td>음압</td><td>STIPA 측정과 같은 위치에서 dB(A)를 재고, 거리 카드의 [음압] 칸을 눌러 화면을 찍습니다.</td></tr>
-    </tbody>
-  </table></div>
-</template>
-
-<template id="tpl-trouble">
-  <div class="tbl-wrap"><table>
-    <thead><tr><th>증상</th><th>먼저 확인할 것</th><th>그래도 안 되면</th></tr></thead>
-    <tbody>
-      <tr><td>스피커 전체에서 소리가 안 남</td><td>컨트롤러 12V 전원, 음원 재생 중인지, USB/AUX 입력 선택, 컨트롤러에서 앰프1까지 3m LAN</td><td>음악 파일로 바꿔 재생해 보고, 앰프1에 다른 LAN 케이블을 꽂아 봅니다.</td></tr>
-      <tr><td>SP1은 나는데 SP2·SP3가 안 남</td><td><b>50m 리피터(앰프2)</b>의 전원과 앞뒤 LAN. 리피터가 꺼지면 그 뒤 앰프로 신호가 가지 않습니다.</td><td>여분 앰프(6번째)로 앰프2를 교체합니다.</td></tr>
-      <tr><td>SP3만 안 남</td><td><b>150m 리피터(앰프4)</b>와 앰프5의 전원·LAN, SP3 스피커 케이블</td><td>여분 앰프로 교체합니다.</td></tr>
-      <tr><td>스피커 하나만 안 남 (다음 스피커는 남)</td><td>그 스피커의 케이블, 드라이버 장착 상태, 그 앰프의 출력 볼륨</td><td>여분 TS 스피커나 여분 드라이버로 바꿔 봅니다.</td></tr>
-      <tr><td>소리가 찌그러지거나 끊김</td><td>볼륨이 너무 큰지(클리핑), MR-PRO 출력 레벨, 드라이버 장착 상태</td><td>볼륨을 낮추고 1m 음압을 다시 맞춘 뒤 볼륨 값을 기록합니다.</td></tr>
-      <tr><td>메아리처럼 두 번 들림</td><td>앰프 지연 설정이 켜져 있는지, 앰프 순서(LAN 연결 순서)가 바뀌지 않았는지</td><td>장비 담당(제조사)에 지연 설정을 확인합니다.</td></tr>
-      <tr><td>같은 지점 2회 값 차이가 큼 (0.03 초과)</td><td>측정 중 차량·말소리·발소리, 마이크 앞을 사람이 막았는지</td><td>3차, 4차까지 측정해 비고에 모두 적고, 원인을 짐작해 메모합니다.</td></tr>
-      <tr><td>XL2 결과가 이상하게 낮거나 측정이 안 됨</td><td>STIPA 판(Ed.4/Ed.5)이 음원과 같은지, 음원이 STIPA 신호인지(음악 아님)</td><td>음원을 처음부터 다시 재생하고 1m 지점에서 시험 측정합니다.</td></tr>
-      <tr><td>XL2 배터리 부족</td><td>예비 배터리·충전기</td><td>측정 담당이 교체하는 동안 C는 음원을 계속 틉니다.</td></tr>
-      <tr><td>차량 진입</td><td>안전 담당이 신호하면 즉시 측정을 멈추고 모두 갓길로</td><td>차량이 완전히 빠져나간 뒤 그 지점부터 다시 측정합니다.</td></tr>
     </tbody>
   </table></div>
 </template>
@@ -786,9 +778,6 @@ const PHASES = [
   { id: 'xl2', tab: '측정법', when: 'XL2', title: 'XL2로 측정하는 법',
     meta: ['지점당 2회', '1회 약 15~25초'],
     templates: ['tpl-xl2'] },
-  { id: 'trouble', tab: '문제 해결', when: '증상별', title: '문제가 생겼을 때',
-    meta: ['위에서부터 차례로 확인'],
-    templates: ['tpl-trouble'] },
 ];
 
 const KEY = 'sti-guide-checks-v2';
