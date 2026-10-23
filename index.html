@@ -523,19 +523,10 @@ label.btn.on { border-color: var(--accent); }
   <div class="roles">
     <div class="role"><span class="tag">A</span><h3>측정 담당</h3><p>XL2 조작, 측정 시작, 정숙 요청</p></div>
     <div class="role"><span class="tag">B</span><h3>기록 담당</h3><p>XL2 화면 촬영, 1·2차 차이 확인, 다음 지점 호출</p></div>
-    <div class="role"><span class="tag">C</span><h3>음원·장비 담당</h3><p>음원 재생·정지, 볼륨, 조합 교체 (A와 무전)</p></div>
+    <div class="role"><span class="tag">C</span><h3>음원·장비 담당</h3><p>음원 재생·정지, 볼륨, 조합 교체</p></div>
     <div class="role"><span class="tag">D</span><h3>안전 담당</h3><p>차량·사람 통제, 차량 오면 측정 중지</p></div>
   </div>
   <p class="lead">인원 부족 시 A·B 겸임 가능. 안전 담당은 필수.</p>
-  <div class="note tip">
-    <h3>무전 호출</h3>
-    <ol>
-      <li>A: "10미터 중앙 준비."</li>
-      <li>C: "음원 정상."</li>
-      <li>D: "차량 없음."</li>
-      <li>A: "측정 시작." … "1차 0.62." (B가 기록)</li>
-    </ol>
-  </div>
 </template>
 
 <template id="tpl-xl2">
@@ -672,7 +663,7 @@ const PHASES = [
       { t: '전원 켜고 소리 확인', time: '13:30', who: 'C·A', how: [
           '볼륨 최소 → 컨트롤러 → 앰프1~5 ON',
           'STIPA 재생, 볼륨 천천히 올리기',
-          'A가 무전기 들고 SP1 → SP2 → SP3 확인',
+          'A가 SP1 → SP2 → SP3 걸으며 확인',
           '50m 지점에서 메아리 여부 확인'],
         ok: '3대 모두 찌그러짐 없음' },
       { t: '레벨 맞추기 · 설정 기록', time: '14:00', who: 'A·C', how: [
@@ -683,13 +674,12 @@ const PHASES = [
       { t: '리허설 측정', time: '14:30', who: '전원', how: [
           '1m · 140m · 240m 중앙 측정',
           '지점당 소요 시간 재기',
-          '무전 호출 연습',
           '배경소음 측정 (음원 OFF, 30초)'],
         ok: '리허설 값 확보, 지점당 시간 파악' },
       { t: '마무리', time: '15:30', who: '전원', how: [
           '보관 가능: 전원 OFF (앰프 → 컨트롤러), 덮개',
           '철수: 분필 표시 유지, 장비 위치 사진 → 회수',
-          'XL2 · MR-PRO · 무전기 충전'],
+          'XL2 · MR-PRO 충전'],
         ok: '내일은 전원 켜기 · 소리 확인만' },
     ]},
   { id: 'am', tab: '시험 오전', when: '10/30 (금) 오전', title: '자체시험 (2조합)',
